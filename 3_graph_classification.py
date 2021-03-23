@@ -164,51 +164,5 @@ for epoch in range(1, 201):
     test_acc = test(test_loader)
     print(f'Epoch: {epoch:03d}, Train Acc: {train_acc:.4f}, Test Acc: {test_acc:.4f}')
 
-from torch_geometric.nn import GraphConv
-
-
-class GNN(torch.nn.Module):
-    def __init__(self, hidden_channels):
-        super(GNN, self).__init__()
-        torch.manual_seed(12345)
-        self.conv1 = ...  # TODO
-        self.conv2 = ...  # TODO
-        self.conv3 = ...  # TODO
-        self.lin = Linear(hidden_channels, dataset.num_classes)
-
-    def forward(self, x, edge_index, batch):
-        x = self.conv1(x, edge_index)
-        x = x.relu()
-        x = self.conv2(x, edge_index)
-        x = x.relu()
-        x = self.conv3(x, edge_index)
-
-        x = global_mean_pool(x, batch)
-
-        x = F.dropout(x, p=0.5, training=self.training)
-        x = self.lin(x)
-        
-        return x
-
-model = GNN(hidden_channels=64)
-print(model)
-
-model = GNN(hidden_channels=64)
-print(model)
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-
-for epoch in range(1, 201):
-    train()
-    train_acc = test(train_loader)
-    test_acc = test(test_loader)
-    print(f'Epoch: {epoch:03d}, Train Acc: {train_acc:.4f}, Test Acc: {test_acc:.4f}')
-
-"""## Conclusion
-
-In this chapter, you have learned how to apply GNNs to the task of graph classification.
-You have learned how graphs can be batched together for better GPU utilization, and how to apply readout layers for obtaining graph embeddings rather than node embeddings.
-
-In the next session, you will learn how you can utilize PyTorch Geometric to let Graph Neural Networks scale to single large graphs.
-
-[Next: Scaling Graph Neural Networks](https://colab.research.google.com/drive/1XAjcjRHrSR_ypCk_feIWFbcBKyT4Lirs)
-"""
+test_acc = test()
+print(f'Test Accuracy: {test_acc:.4f}')

@@ -10,7 +10,7 @@ class GATLayer(nn.Module):
     Simple PyTorch Implementation of the Graph Attention layer.
     """
 
-    def __init__(self, in_features, out_features, dropout, alpha, concat=True):
+    def __init__(self, in_features, out_features, dropout, alpha=0.2, concat=True):
         super(GATLayer, self).__init__()
         self.dropout       = dropout        # drop prob = 0.6
         self.in_features   = in_features    # 

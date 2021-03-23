@@ -1,0 +1,2 @@
+from .GraphConvolutionalLayer import GraphConvolutionalLayer
+from .GraphConvolutionalNetwork import GraphConvolutionalNetwork

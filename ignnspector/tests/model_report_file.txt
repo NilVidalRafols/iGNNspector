@@ -1,0 +1,26 @@
+#MODEL REPORT
+Below you will find the properties that characterize the following MODEL
+--------------------------------------------------------------------------
+model name: my_GCN
+num layers: 4
+
+--------------------------------------------------------------------------
+##STRUCTURE
+a description of the characteristica of each layer from the model
+--------------------------------------------------------------------------
+###Layer 1
+type: GCN
+activation: relu
+
+Layer 2
+type: GAT
+activation: relu
+
+###Layer 3
+type: GAT
+activation: softmax
+
+###Layer 3
+type: MLP
+activation: softmax
+

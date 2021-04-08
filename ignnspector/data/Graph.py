@@ -1,4 +1,4 @@
-
+from ignnspector.analysis.reports import GraphReport
 
 class Graph:
     def __init__(self, report:[GraphReport]=None):

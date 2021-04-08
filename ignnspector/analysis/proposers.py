@@ -1,32 +1,27 @@
+from abc import ABC, abstractmethod
 
-
-
-
-
-class Proposer:
+class Proposer(ABC):
     def __init__(self, graph=None):
         if graph != None:
-            self.metrics = graph.report.metrics
+            self.metrics = graph.report.contents
+
+    @abstractmethod
+    def propose_model(self, graph=None, num_proposals:int=None):
+        pass
+
+class Studies(Proposer):
+    def __init__(self, graph=None):
+        super(Studies, self).__init__(graph)
 
     def propose_model(self, graph=None, num_proposals:int):
         if graph != None:
-            self.metrics = graph.report.metrics
+            self.metrics = graph.report.contents
         
         if num_proposals == None or num_proposals < 1:
             num_proposals = 1
 
         self.reports = metrics_to_model(num_proposals)
         return self.reports
-
-    def metrics_to_model(self):
-        pass
-
-
-class Studies(Proposer):
-    def __init__(self, graph=None):
-        super(Studies, self).__init__(graph)
-
-    def metrics_to_model(self, num_proposals:int):
         # per cada mètrica de la qual sapiguem quins models responen millor,
         # existeix un condicional que afegeix el nom del model que va o
         # van millor, i les capes necessaries.

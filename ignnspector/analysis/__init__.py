@@ -1,0 +1,1 @@
+from ignnspector.analysis.Analyzer import *

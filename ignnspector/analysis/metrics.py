@@ -5,6 +5,8 @@ metrics = [
     "num_edges",
     "num_features",
     "num_classes",
+    "prediction_type", # What will the model predict (graph/node pred, ...)
+    "learning_method", # inductive/transductive learning
     "avg_degree",
     "diameter",
     "avg_path_length",
@@ -14,7 +16,7 @@ metrics = [
     "avg_clustering_coef",
     "trasitivity",
     "density",
-    "assertativity",
+    "homophily",
     "edge_cut"
     '''...'''
 ]

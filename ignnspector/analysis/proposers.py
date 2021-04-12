@@ -13,51 +13,89 @@ class Studies(Proposer):
     def __init__(self, graph=None):
         super(Studies, self).__init__(graph)
 
-    def propose_model(self, graph=None, num_proposals:int):
+    def propose_model(self, graph=None, num_proposals:int=None):
         if graph != None:
             self.metrics = graph.report.contents
         
         if num_proposals == None or num_proposals < 1:
             num_proposals = 1
-
-        self.reports = metrics_to_model(num_proposals)
-        return self.reports
         # per cada mètrica de la qual sapiguem quins models responen millor,
         # existeix un condicional que afegeix el nom del model que va o
         # van millor, i les capes necessaries.
-        transforms = []
-        models = []
-        num_layers = []
-        # mirar una manera de que el transform de la proposta sigui cooerent
-        # amb el model de la proposta i el numero de capes, potser tenint una
-        # unica llista de propostes on cada element és
-        # [trasform,model,num_capes]
+        proposals = []
+
         if 'homophily' in self.metrics:
-            h = metrics['homophily']
+            h = float(self.metrics['homophily'])
             if h < 0.7:
-                models.append(['Geom-GCN', 'H2GCN'])
+                contents = {}
+                contents['model_name'] = 'Geom-GCN'
+                contents['num_layers'] = ['5']
+                proposals.append(contents)
+                contents = {}
+                contents['model_name'] = 'H2GCN'
+                contents['num_layers'] = ['5']
+                proposals.append(contents)
             else:
-                models.append(['GCN', 'GAT', 'GIN'])
+                contents = {}
+                contents['model_name'] = 'GCN'
+                contents['num_layers'] = ['4']
+                proposals.append(contents)
+                contents = {}
+                contents['model_name'] = 'GAT'
+                contents['num_layers'] = ['4']
+                proposals.append(contents)
+                contents = {}
+                contents['model_name'] = 'GIN'
+                contents['num_layers'] = ['4']
+                proposals.append(contents)
 
         if 'prediction_type' in self.metrics:
-            pred = metrics['prediction_type']
+            pred = self.metrics['prediction_type']
             if pred == 'node':
-                models.append(['GCN2', 'GEN'])
+                contents = {}
+                contents['model_name'] = 'GCN'
+                contents['num_layers'] = '4'
+                proposals.append(contents)
+                contents = {}
+                contents['model_name'] = 'GAT'
+                contents['num_layers'] = '4'
+                proposals.append(contents)
+                contents['model_name'] = 'GCN2'
+                contents['num_layers'] = ['16','32','64']
+                contents['advice'] = ['Although the final model has a definite \
+                    number of layers, it is adviced to try to test the model \
+                    with different number of layers']
+                proposals.append(contents)
+            elif pred == 'graph':
+                contents = {}
+                contents['model_name'] = 'GCN'
+                contents['num_layers'] = '4'
+                proposals.append(contents)
+                contents = {}
+                contents['model_name'] = 'GAT'
+                contents['num_layers'] = '4'
+                proposals.append(contents)
 
         if 'learning_method' in self.metrics:
-            m = metrics['learning_method']
+            m = self.metrics['learning_method']
             if m == 'transductive':
-                models.append(['GCN', 'GEN', 'GAT'])
+                pass
             elif m == 'inductive':
-                models.append(['GAT'])
-
+                pass
 
         if 'avg_clustering_coef' in self.metrics:
-            c = self.metrics['avg_clustering_coef']
+            c = float(self.metrics['avg_clustering_coef'])
             if c < 0.2:
-                transforms.append('PCGCN') 
-                num_layers.append
+                pass
+        
+        models = self.select_best_models(proposals, num_proposals)
+        
+        return models
             
+    def select_best_models(self, proposals, num_proposals):
+        models = sorted(proposals, key=lambda x: x['model_name'])
+        return models
+
 
 class DecisionTree(Proposer):
     def __init__(self, graph=None):

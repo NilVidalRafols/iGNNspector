@@ -1,6 +1,6 @@
 #GRAPH REPORT
-Below you can find metrics that characterize the following graph
---------------------------------------------------------------------------
+###Below you can find metrics that characterize the following graph
+
 name: Reddit
 
 num_nodes: 24

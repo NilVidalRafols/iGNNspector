@@ -1,14 +1,15 @@
+from abc import ABC, abstractmethod
 
-
-class Report:
+class Report(ABC):
     def __init__(self, report_file: str=None):
-        self.contents = {} # Aquí hi ha una entrada per cada component que conforma un report
+        self.contents = {}
         if report_file != None:
             self.file = report_file
         else:
             self.file = ""
 
-    def parse_file(self):
+    @abstractmethod
+    def parse_file(self, report_file):
         pass
 
 class GraphReport(Report):
@@ -17,8 +18,10 @@ class GraphReport(Report):
         self.parse_file()
 
     def parse_file(self):
-        lines = [line.split(': ') for line in self.file.splitlines()]
-        lines = lines[2:]
+        lines = [line.split(': ') 
+                for line in self.file.splitlines() 
+                if len(line) > 0 and (line[0] != '#' or line[0] != '-')]
+        
         self.contents = {line[0]:line[1] for line in lines if len(line) == 2}
 
 

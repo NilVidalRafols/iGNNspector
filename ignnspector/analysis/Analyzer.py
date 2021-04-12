@@ -4,10 +4,8 @@
 
 # tool imports
 from ignnspector.data import Graph
-#from ignnspector.models import Model
 from ignnspector.analysis.reports import *
 from ignnspector.analysis.proposers import *
-
 
 class Analyzer:
 

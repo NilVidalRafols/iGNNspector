@@ -17,4 +17,6 @@ graph = Graph(report)
 analyzer = Analyzer(graph)
 proposer = Studies(graph)
 
-analyzer.propose_model_using('Studies', 3)
+models = analyzer.propose_model_using('Studies', 3)
+
+print(models)

@@ -62,14 +62,10 @@ class Studies(Proposer):
                 proposals.append(contents)
                 contents = {}
                 contents['model_name'] = 'GCN2'
-                contents['num_layers'] = '16'
+                contents['num_layers'] = ['32']
                 contents['advice'] = ['Although the final model has a definite \
                     number of layers, it is adviced to try to test the model \
                     with different number of layers']
-                proposals.append(contents)
-                contents['num_layers'] = '32'
-                proposals.append(contents)
-                contents['num_layers'] = '64'
                 proposals.append(contents)
 
             elif pred == 'graph':
@@ -94,29 +90,60 @@ class Studies(Proposer):
             if c < 0.2:
                 pass
         
-        models = self.select_best_models(proposals, num_proposals)
+        metrics = ['model_name','num_layers','transform']
+        proposals = self.select_best_options(proposals, num_proposals, metrics)
         
-        return models
-            
-    def select_best_models(self, proposals, num_proposals):        
-        ranking = self.count_proposals(proposals)
-
-        for proposal in proposals:
-            pass
-
         return proposals
 
-    def count_proposals(self, proposals):
-        proposals = sorted(proposals, key=lambda x: x['model_name'])
+    def select_best_options(self, proposals, num_proposals, metrics):
+        if len(metrics) == 0:
+            return proposals
+
+        metric = metrics.pop(0)
+        proposals = self.count_proposals(proposals, metric)
+        proposals = sorted(proposals, key=lambda x: len(x), reverse=True)
+        proposals = proposals[:num_proposals]
+        result = []
+        for group in proposals:
+            result.append(self.select_best_options(group, num_proposals, metrics))
+        return result
+
+    def select_best_options_it(self, proposals, num_proposals, metrics):
+        for metric in metrics:
+            proposals = self.count_proposals(proposals, metric)
+            proposals = sorted(proposals, key=lambda x: len(x), reverse=True)
+            proposals = proposals[:num_proposals]
+
+
+
+
+    # def select_best_models(self, proposals, num_proposals):        
+    #     ranking = self.count_proposals(proposals, 'model_name')
+    #     ranking = map(lambda x: x[0], ranking[:num_proposals])
+
+    #     for model in ranking:
+    #         proposals = [p for p in proposals] if p['model_name'] == model]
+    #         ranking = self.count_proposals()
+
+    #     return proposals
+
+    # returns a list with as many lists as the number of distinct elements
+    # given by the metric.
+    def count_proposals(self, proposals, metric):
+        key = lambda x: x[metric] if metric in x else 'none'
+        proposals = sorted(proposals, key=key)
         ranking = []
-        prev_proposal = ''
+        prev_value = ''
         for proposal in proposals:
-            if proposal['model_name'] != prev_proposal:
-                ranking.append([proposal['model_name'], 1])
-                prev_proposal = proposal['model_name']
+            if metric in proposal and proposal[metric] != prev_value:
+                    ranking.append([proposal])
+                    prev_value = proposal[metric]
+            elif 'none' != prev_value:
+                    ranking.append([proposal])
+                    prev_value = 'none'
             else:
-                ranking[-1][1] += 1
-        return sorted(ranking, key=lambda x: x[1])
+                ranking[-1].append(proposal)
+        return ranking
 
 class DecisionTree(Proposer):
     def __init__(self, graph=None):

@@ -21,7 +21,7 @@ class Studies(Proposer):
             num_proposals = 1
         # per cada mètrica de la qual sapiguem quins models responen millor,
         # existeix un condicional que afegeix el nom del model que va o
-        # van millor, i les capes necessaries.
+        # van millor, amb les capes necessaries.
         proposals = []
 
         if 'homophily' in self.metrics:
@@ -90,42 +90,29 @@ class Studies(Proposer):
             if c < 0.2:
                 pass
         
-        metrics = ['model_name','num_layers','transform']
-        proposals = self.select_best_options(proposals, num_proposals, metrics)
+        # features tells whath features we want to use to decide the
+        # best model and how many diferent options per feature we want to
+        # present
+        features = [('model_name', 3),('num_layers', 1),('transform', 1)]
+        proposals = self.select_best_options(proposals, features)
         
         return proposals
 
-    def select_best_options(self, proposals, num_proposals, metrics):
-        if len(metrics) == 0:
-            return proposals
+    def select_best_options(self, proposals, features):
+        result = []
+        if len(features) == 0:
+            # Returns the final list of proposals without duplicates
+            duplicate = lambda x,l: len([x for y in l if x == y]) > 0
+            [result.append(x) for x in proposals if not duplicate(x,result)]
+            return result
 
-        metric = metrics.pop(0)
-        proposals = self.count_proposals(proposals, metric)
+        feature, num_proposals = features.pop(0)
+        proposals = self.count_proposals(proposals, feature)
         proposals = sorted(proposals, key=lambda x: len(x), reverse=True)
         proposals = proposals[:num_proposals]
-        result = []
         for group in proposals:
-            result.append(self.select_best_options(group, num_proposals, metrics))
+            result += self.select_best_options(group, features)
         return result
-
-    def select_best_options_it(self, proposals, num_proposals, metrics):
-        for metric in metrics:
-            proposals = self.count_proposals(proposals, metric)
-            proposals = sorted(proposals, key=lambda x: len(x), reverse=True)
-            proposals = proposals[:num_proposals]
-
-
-
-
-    # def select_best_models(self, proposals, num_proposals):        
-    #     ranking = self.count_proposals(proposals, 'model_name')
-    #     ranking = map(lambda x: x[0], ranking[:num_proposals])
-
-    #     for model in ranking:
-    #         proposals = [p for p in proposals] if p['model_name'] == model]
-    #         ranking = self.count_proposals()
-
-    #     return proposals
 
     # returns a list with as many lists as the number of distinct elements
     # given by the metric.
@@ -138,7 +125,7 @@ class Studies(Proposer):
             if metric in proposal and proposal[metric] != prev_value:
                     ranking.append([proposal])
                     prev_value = proposal[metric]
-            elif 'none' != prev_value:
+            elif not metric in proposal and 'none' != prev_value:
                     ranking.append([proposal])
                     prev_value = 'none'
             else:

@@ -22,5 +22,7 @@ class Test_Analyzer(unittest.TestCase):
     def test_decrement(self):
         self.assertEqual(4-0, 4)
 
+class Test_Proposer(unittest.TestCase)
+
 if __name__ == '__main__':
     unittest.main()

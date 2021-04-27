@@ -1,6 +1,6 @@
 
 
-metrics = [
+metrics_map = [
     "num_nodes",
     "num_edges",
     "num_features",

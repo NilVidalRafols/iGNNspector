@@ -1,13 +1,4 @@
-from abc import ABC, abstractmethod
-
-class Proposer(ABC):
-    def __init__(self, graph=None):
-        if graph != None:
-            self.metrics = graph.report.contents
-
-    @abstractmethod
-    def propose_model(self, graph=None, num_proposals:int=None):
-        pass
+from ignnspector.analysis.proposers import Proposer
 
 class Studies(Proposer):
     def __init__(self, graph=None):
@@ -27,56 +18,56 @@ class Studies(Proposer):
         if 'homophily' in self.metrics:
             h = float(self.metrics['homophily'])
             if h < 0.7:
-                contents = {}
-                contents['model_name'] = 'Geom-GCN'
-                contents['num_layers'] = ['5']
-                proposals.append(contents)
-                contents = {}
-                contents['model_name'] = 'H2GCN'
-                contents['num_layers'] = ['5']
-                proposals.append(contents)
+                proposals.append({
+                    'model_name': 'Geom-GCN',
+                    'num_layers': ['5']
+                })
+                proposals.append({
+                    'model_name': 'H2GCN',
+                    'num_layers': ['5']
+                })
             else:
-                contents = {}
-                contents['model_name'] = 'GCN'
-                contents['num_layers'] = ['4']
-                proposals.append(contents)
-                contents = {}
-                contents['model_name'] = 'GAT'
-                contents['num_layers'] = ['4']
-                proposals.append(contents)
-                contents = {}
-                contents['model_name'] = 'GIN'
-                contents['num_layers'] = ['4']
-                proposals.append(contents)
+                proposals.append({
+                    'model_name': 'GCN',
+                    'num_layers': ['4']
+                })
+                proposals.append({
+                    'model_name': 'GAT',
+                    'num_layers': ['4']
+                })
+                proposals.append({
+                    'model_name': 'GIN',
+                    'num_layers': ['4'],
+                })
 
         if 'prediction_type' in self.metrics:
             pred = self.metrics['prediction_type']
             if pred == 'node':
-                contents = {}
-                contents['model_name'] = 'GCN'
-                contents['num_layers'] = ['4']
-                proposals.append(contents)
-                contents = {}
-                contents['model_name'] = 'GAT'
-                contents['num_layers'] = ['4']
-                proposals.append(contents)
-                contents = {}
-                contents['model_name'] = 'GCN2'
-                contents['num_layers'] = ['32']
-                contents['advice'] = ['Although the final model has a definite \
-                    number of layers, it is adviced to try to test the model \
-                    with different number of layers']
-                proposals.append(contents)
+                proposals.append({
+                    'model_name': 'GCN',
+                    'num_layers': ['4']
+                })
+                proposals.append({
+                    'model_name': 'GAT',
+                    'num_layers': ['4']
+                })
+                proposals.append({
+                    'model_name': 'GCN2',
+                    'num_layers': ['32'],
+                    'advice': ['Although the final model has a definite '
+                        'number of layers, it is adviced to try to test '
+                        'the model with different number of layers']
+                })
 
             elif pred == 'graph':
-                contents = {}
-                contents['model_name'] = 'GCN'
-                contents['num_layers'] = ['4']
-                proposals.append(contents)
-                contents = {}
-                contents['model_name'] = 'GAT'
-                contents['num_layers'] = ['4']
-                proposals.append(contents)
+                proposals.append({
+                    'model_name': 'GCN',
+                    'num_layers': ['4'],
+                })
+                proposals.append({
+                    'model_name': 'GAT',
+                    'num_layers': ['4'],
+                })
 
         if 'learning_method' in self.metrics:
             m = self.metrics['learning_method']
@@ -131,10 +122,3 @@ class Studies(Proposer):
             else:
                 ranking[-1].append(proposal)
         return ranking
-
-class DecisionTree(Proposer):
-    def __init__(self, graph=None):
-        super(Studies, self).__init__(graph)
-
-    def metrics_to_model(self):
-        pass

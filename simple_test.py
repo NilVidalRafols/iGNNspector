@@ -18,5 +18,5 @@ analyzer = Analyzer(graph)
 proposer = Studies(graph)
 
 models = analyzer.propose_model_using('Studies', 3)
-
-print(models)
+for model in models:
+    print(model)

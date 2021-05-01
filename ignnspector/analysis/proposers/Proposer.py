@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 
 class Proposer(ABC):
-    def __init__(self, graph=None):
-        if graph != None:
-            self.metrics = graph.report.contents
+    def __init__(self, report=None):
+        self.report = report
 
     @abstractmethod
     def propose_model(self, graph=None, num_proposals:int=None):

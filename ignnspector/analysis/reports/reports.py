@@ -19,11 +19,12 @@ class GraphReport(Report):
         self.parse_string()
 
     def parse_string(self):
-        lines = [line.split(': ') 
-                for line in self.string.splitlines() 
-                if len(line) > 0 and (line[0] != '#' or line[0] != '-')]
+        self.contents = yaml.safe_load(self.string)
+        # lines = [line.split(': ') 
+        #         for line in self.string.splitlines() 
+        #         if len(line) > 0 and (line[0] != '#' or line[0] != '-')]
         
-        self.contents = {line[0]:line[1] for line in lines if len(line) == 2}
+        # self.contents = {line[0]:line[1] for line in lines if len(line) == 2}
 
 
 class ModelReport(Report):
@@ -33,3 +34,8 @@ class ModelReport(Report):
 
     def parse_string(self):
         self.contents = yaml.safe_load(self.string)
+
+    def premade(self, proposal):
+        with open('premade/' + proposal['model_type'] + '.yaml') as f:
+            self.report_string = f.read()
+            self.parse_string()

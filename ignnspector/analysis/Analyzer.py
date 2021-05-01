@@ -26,9 +26,7 @@ class Analyzer:
     
     def propose_model_using(self, technique=None,
                             num_proposals:int=None):
-                            
-        metrics = self.graph.report.contents
-        
+                                    
         if type(technique) == str:
             try:
                 proposer = eval(technique)()
@@ -45,7 +43,7 @@ class Analyzer:
         else:
             proposer = technique
 
-        self.proposals = proposer.propose_model(self.graph, num_proposals)
+        self.proposals = proposer.propose_model(self.graph.report, num_proposals)
         return self.proposals
 
     def compare_models(self, other_model):

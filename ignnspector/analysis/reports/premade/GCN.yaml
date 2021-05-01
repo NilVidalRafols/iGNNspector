@@ -1,0 +1,32 @@
+#MODEL REPORT
+######Below you will find the properties that characterize the following MODEL
+
+model_name: iGNNspector_GCN
+model_type: GCN
+prediction_type: node_classification
+training_mode: transductive
+transform: "user specific"
+
+##STRUCTURE
+
+layers:
+    -
+        type: GCN
+        in_features: 32
+        out_features: 16
+        activation: relu
+    -
+        type: GCN
+        in_features: 16
+        out_features: 16
+        activation: relu
+    -
+        type: GCN
+        in_features: 16
+        out_features: 16
+        activation: softmax
+    -
+        type: MLP
+        in_features: 16
+        out_features: 4
+        activation: softmax

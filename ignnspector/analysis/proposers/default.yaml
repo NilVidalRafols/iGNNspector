@@ -1,17 +1,16 @@
 
-prediction_type:
-
+activation: relu
 layers:
   # inside layer
   default_layer:
-    activation: relu
+    - activation: relu
 
   # last layer for node classification
   last_node_clas:
-    type: MLP
-    activation: softmax
+    - type: MLP
+      activation: softmax
 
   # last layers for graph classification
   last_graph_clas:
-  type: readout
-  type: linear
+    - type: readout
+    - type: linear

@@ -16,8 +16,9 @@ import yaml
 #     algo = yaml.dump(dic, f)
 
 GCN, my = 'ignnspector/analysis/reports/premade/GCN.yaml','experiments/yaml/my.yaml'
-with open(my, 'r') as f:
+with open(GCN, 'r') as f:
     contents = yaml.full_load(f)
 
 with open(my, 'w') as f:
-    yaml.dump(contents, f)
+    algo = yaml.dump(contents)
+    print(algo)

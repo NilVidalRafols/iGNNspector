@@ -2,24 +2,25 @@ from abc import ABC, abstractmethod
 import yaml
 
 class Report(ABC):
-    def __init__(self, report_string: str=None):
-        self.contents = {}
+    def __init__(self, report_string:str=None, contents:dict=None):
         if report_string != None:
-            self.string = report_string
-        else:
-            self.string = ""
+            self.contents = self.parse_yaml(report_string)
+        elif contents != None:
+            self.contents = contents
+
+    def yaml_string(self):
+        return yaml.dump(self.contents)
 
     @abstractmethod
-    def parse_string(self, report_string):
+    def parse_yaml(self, report_string):
         pass
 
 class GraphReport(Report):
-    def __init__(self, report_string=None):
-        super(GraphReport, self).__init__(report_string)
-        self.parse_string()
+    def __init__(self, report_string=None,  contents:dict=None):
+        super(GraphReport, self).__init__(report_string, contents)
 
-    def parse_string(self):
-        self.contents = yaml.safe_load(self.string)
+    def parse_yaml(self, report_string):
+        return yaml.safe_load(report_string)
         # lines = [line.split(': ') 
         #         for line in self.string.splitlines() 
         #         if len(line) > 0 and (line[0] != '#' or line[0] != '-')]
@@ -28,14 +29,13 @@ class GraphReport(Report):
 
 
 class ModelReport(Report):
-    def __init__(self, report_string=None):
-        super(ModelReport, self).__init__(report_string)
-        self.parse_string()
+    def __init__(self, report_string=None, contents:dict=None):
+        super(ModelReport, self).__init__(report_string, contents)
 
-    def parse_string(self):
-        self.contents = yaml.safe_load(self.string)
+    def parse_yaml(self, report_string):
+        return yaml.safe_load(report_string)
 
     def premade(self, proposal):
         with open('premade/' + proposal['model_type'] + '.yaml') as f:
             self.report_string = f.read()
-            self.parse_string()
+            self.parse_yaml()

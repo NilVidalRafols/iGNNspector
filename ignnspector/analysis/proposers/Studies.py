@@ -1,4 +1,5 @@
 from ignnspector.analysis.proposers import Proposer
+from ignnspector.analysis.reports import ModelReport
 
 import yaml
 
@@ -20,7 +21,8 @@ class Studies(Proposer):
         proposals = self.get_proposals_from(metrics)
         proposals = self.select_best_options(proposals, features)
         
-        reports = [get_report_from(proposal) for proposal in proposals]
+        reports = [self.get_report_from(proposal,metrics)
+                    for proposal in proposals]
         return reports
 
 
@@ -28,7 +30,7 @@ class Studies(Proposer):
         proposals = []
         if 'homophily' in metrics:
             h = float(metrics['homophily'])
-            if h < 0.7:
+            if h < 0.6:
                 proposals.append({
                     'model_type': 'Geom-GCN',
                     'num_layers': '5'
@@ -53,7 +55,7 @@ class Studies(Proposer):
 
         if 'prediction_type' in metrics:
             pred = metrics['prediction_type']
-            if pred == 'node':
+            if pred == 'node_classification':
                 proposals.append({
                     'model_type': 'GCN',
                     'num_layers': '4'
@@ -70,7 +72,7 @@ class Studies(Proposer):
                         'the model with different number of layers']
                 })
 
-            elif pred == 'graph':
+            elif pred == 'graph_classification':
                 proposals.append({
                     'model_type': 'GCN',
                     'num_layers': '4',
@@ -79,19 +81,52 @@ class Studies(Proposer):
                     'model_type': 'GAT',
                     'num_layers': '4',
                 })
+            elif pred == 'node_prediction':
+                proposals.append({
+                    'model_type': 'Geom-GCN',
+                    'num_layers': '5'
+                })
+                proposals.append({
+                    'model_type': 'GCN2',
+                    'num_layers': '16',
+                    'advice': ['Although the final model has a definite '
+                        'number of layers, it is adviced to try to test '
+                        'the model with different number of layers']
+                })
 
         if 'learning_method' in metrics:
             m = metrics['learning_method']
             if m == 'transductive':
-                pass
+                proposals.append({
+                    'model_type': 'GAT',
+                    'num_layers': '4',
+                })
+
             elif m == 'inductive':
-                pass
+                proposals.append({
+                    'model_type': 'GCN',
+                    'num_layers': '4',
+                })
+
 
         if 'avg_clustering_coef' in metrics:
             c = float(metrics['avg_clustering_coef'])
             if c < 0.2:
                 pass
         
+        if 'modularity' in metrics:
+            c = float(metrics['modularity'])
+            if c < 0.5:
+                proposals.append({
+                    'model_type': 'GAT',
+                    'num_layers': '4',
+                })
+            else:
+                proposals.append({
+                    'model_type': 'CE-GCN',
+                    'num_layers': '3'
+                })
+
         return proposals
 
     def select_best_options(self, proposals, features):
@@ -134,13 +169,14 @@ class Studies(Proposer):
         # required is not specified in the proposal, just add a default value.
         
         # Load the default contents for the model report
-        with open('default.yaml', 'r') as f:
+        with open('ignnspector/analysis/proposers/default.yaml', 'r') as f:
             default = yaml.safe_load(f)
 
         p = proposal
         contents = {}
         contents['model_name'] = 'iGNNspector_' + p['model_type']
         contents['model_type'] = p['model_type']
+        num_layers = int(p['num_layers'])
 
         if 'transform' in p:
             contents['transform'] = p['transform']
@@ -154,35 +190,36 @@ class Studies(Proposer):
         layers = []
         # the number of hidden channels decreases at each layer by these amount
         less_channels = metrics['num_features'] - metrics['num_classes']
-        less_channels //= p['num_layers']
+        less_channels //= num_layers
 
         hidden_channels = metrics['num_features']
         # add as many layers as specified in 'num_layers'
-        for i in range(p['num_layers']):
-            if i != p['num_layers'] - 1:
+        for i in range(num_layers):
+            if i != num_layers - 1:
                 layers.append({
-                    'type': p['model_type']
-                    'in_features': hidden_channels
-                    'out_features': hidden_channels - less_channels
+                    'type': p['model_type'],
+                    'in_features': hidden_channels,
+                    'out_features': hidden_channels - less_channels,
                     'activation': default['activation']
                 })
                 hidden_channels -= less_channels
             else:
                 # add the last layer or layers according to the prediction type
-                last_layers = {}
+                last_layers = []
                 if metrics['prediction_type'] == 'node_classification':
-                    last_layers = default['layers']['last_node_clas']
-                    last_layers.update({
-                    'in_features': hidden_channels
+                    last_layers.extend(default['layers']['last_node_clas'])
+                    last_layers[0].update({
+                    'in_features': hidden_channels,
                     'out_features': metrics['num_classes']
                     })
                 elif metrics['prediction_type'] == 'graph_classification':
-                    last_layers = default['layers']['last_graph_clas']
+                    last_layers.extend(default['layers']['last_graph_clas'])
                     for layer in last_layers:
                         layer.update({
-                            'in_features': hidden_channels
+                            'in_features': hidden_channels,
                             'out_features': metrics['num_classes']
                     })
                 layers.extend(last_layers)
 
         contents['layers'] = layers
+        return ModelReport(contents=contents)

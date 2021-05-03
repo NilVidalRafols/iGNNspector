@@ -13,8 +13,10 @@ def test_Studies(features):
     report = GraphReport(report_string)
     p = Studies()
     proposals = p.propose_model(report,features)
-    print('done!')
 
-test_Studies([('model_type', 1),('num_layers', 2)])
-test_Studies([('model_type', 3),('num_layers', 1)])
+    for proposal in proposals:
+        print(proposal.yaml_string())
+
+# test_Studies([('model_type', 1),('num_layers', 2)])
+# test_Studies([('model_type', 3),('num_layers', 1)])
 test_Studies([('model_type', 4),('num_layers', 2)])

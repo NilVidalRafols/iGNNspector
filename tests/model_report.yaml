@@ -3,7 +3,7 @@
 
 model_name: my_GCN
 model_type: GCN
-prediction_type: node
+prediction_type: node_classification
 training_mode: transductive
 transform: none
 

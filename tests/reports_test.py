@@ -10,6 +10,9 @@ def test_load_model_yaml():
     with open('tests/model_report.yaml', 'r') as f:
         report_string = f.read()
     report = ModelReport(report_string)
+    print(report.contents)
+    print('--------------------')
+    print(report.yaml_string())
     print('done!')
 
 test_load_model_yaml()

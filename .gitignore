@@ -1,6 +1,7 @@
 # Personal
 dataset/
 .vscode/
+GUI/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

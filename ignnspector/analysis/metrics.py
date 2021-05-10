@@ -14,7 +14,7 @@ metrics_map = [
     "node_connectivity",
     "edge_connectivity",
     "avg_clustering_coef",
-    "trasitivity",
+    "transitivity",
     "density",
     "homophily",
     "edge_cut"

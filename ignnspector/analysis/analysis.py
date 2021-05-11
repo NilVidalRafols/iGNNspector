@@ -1,4 +1,8 @@
 
+def available_metrics_for(graph):
+    pass
+
+
 
 metrics_map = [
     "num_nodes",

@@ -1,8 +1,19 @@
 
+import networkx as nx
+
 def available_metrics_for(graph):
     pass
 
-
+nx.degree_histogram(G)
+nx.algorithms.cluster.average_clustering(G)
+nx.density(G)
+nx.algorithms.components.connected_components(G)
+nx.algorithms.components.strongly_connected_components(G)
+nx.average_shortest_path_length(cc)
+nx.diameter(cc)
+nx.radius(cc)
+nx.algorithms.connectivity.connectivity.node_connectivity(cc)
+nx.algorithms.connectivity.connectivity.edge_connectivity(cc)
 
 metrics_map = [
     "num_nodes",

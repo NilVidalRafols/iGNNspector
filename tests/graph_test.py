@@ -1,5 +1,4 @@
 import sys
-
 sys.path.append(sys.path[0].replace('/tests', ''))
 
 from ignnspector.data import Graph

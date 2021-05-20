@@ -48,10 +48,16 @@ class Graph:
                 G = nx.Graph()
                 G.add_nodes_from(list(range(0, num_nodes)))
                 G.add_edges_from(edge_list)
+                # add classes
+                y = data[1]
+                for i, feat_dict in G.nodes(data=True):
+                    feat_dict.update({'y': y[i][0]})
+                # and node features
                 if 'node_feat' in data[0]:
                     node_feat = data[0]['node_feat']
                     for i, feat_dict in G.nodes(data=True):
                         feat_dict.update({'x': node_feat[i]})
+                
 
             self._nx_Graph = G
 
@@ -78,11 +84,14 @@ class Graph:
                 G = nx.Graph()
                 G.add_nodes_from(list(range(0, num_nodes)))
                 G.add_edges_from(edge_list)
+                # add classes
+                y = data[1]
+                for i, feat_dict in G.nodes(data=True):
+                    feat_dict.update({'y': y[i][0]})
                 if 'node_feat' in data[0]:
                     node_feat = data[0]['node_feat']
                     for i, feat_dict in G.nodes(data=True):
                         feat_dict.update({'x': node_feat[i]})
-
 
             self._nx_DiGraph = G
 

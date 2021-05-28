@@ -1,0 +1,77 @@
+table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+scale: log
+annotate: true
+title: time plot
+
+plots:
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/average_clustering_log_plot.png
+    columns: [average_clustering, total]
+    scale: log
+    annotate: true
+
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/density_log_plot.png
+    columns: [density, total]
+    scale: log
+    annotate: true
+
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/average_shortest_path_length_log_plot.png
+    columns: [average_shortest_path_length, total]
+    scale: log
+    annotate: true
+
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/diameter_log_plot.png
+    columns: [diameter, total]
+    scale: log
+    annotate: true
+
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/radius_log_plot.png
+    columns: [radius, total]
+    scale: log
+    annotate: true
+
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/node_connectivity_log_plot.png
+    columns: [node_connectivity, total]
+    scale: log
+    annotate: true
+
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/edge_connectivity_log_plot.png
+    columns: [edge_connectivity, total]
+    scale: log
+    annotate: true
+
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/real_avg_degree_log_plot.png
+    columns: [real_avg_degree, total]
+    scale: log
+    annotate: true
+
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/edge_cut_log_plot.png
+    columns: [edge_cut, total]
+    scale: log
+    annotate: true
+
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/attribute_assortativity_coefficient_log_plot.png
+    columns: [attribute_assortativity_coefficient, total]
+    scale: log
+    annotate: true
+
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/homophily_ratio_log_plot.png
+    columns: [homophily_ratio, total]
+    scale: log
+    annotate: true
+
+  - table_path: experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+    output_path: experiments/analysis/CiteSeer/plots/total_time_log_plot.png
+    columns: [total]
+    scale: log
+    annotate: true

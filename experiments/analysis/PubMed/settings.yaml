@@ -1,0 +1,9 @@
+dataset: [pyg, Planetoid, PubMed]
+
+# if node increment is a percentage, it will define the node increase rate by
+# the percentage of the last node count if it is a number, it will increase
+# the node count by that exact amount.
+node_increment: 250
+initial_split_length: 250
+output_path: experiments/analysis/PubMed/time_table_PubMed_2.csv
+single_representation: False

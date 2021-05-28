@@ -1,0 +1,11 @@
+table_paths: 
+  - experiments/analysis/PubMed/time_table_PubMed.csv
+  - experiments/analysis/CiteSeer/time_table_CiteSeer.csv
+  - experiments/analysis/ogbn-arxiv/ogbn-arxiv_time_table.csv
+
+scale: normal
+annotate: false
+
+plots:
+  - output_path: experiments/analysis/plots/false_avg_degree.png
+    columns: [false_avg_degree]

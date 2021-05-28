@@ -1,0 +1,8 @@
+dataset: [ogb, link_pred, ogbl-collab]
+
+# if node increment is a percentage, it will define the node increase rate by
+# the percentage of the last node count if it is a number, it will increase
+# the node count by that exact amount.
+node_increment: 25%
+initial_split_length: 500
+output_path: experiments/analysis/ogbl-collab/time_table_ogbl-collab.csv

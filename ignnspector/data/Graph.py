@@ -1,4 +1,5 @@
 from networkx.classes.function import to_undirected
+import torch
 from ignnspector.analysis.reports import GraphReport
 
 import networkx as nx
@@ -7,7 +8,7 @@ import torch_geometric as pyg
 import random
 
 class Graph:
-    def __init__(self, data):
+    def __init__(self, data, single_representation=False):
         if isinstance(data, nx.Graph) or isinstance(data, nx.DiGraph):
             #self.nodes = data.nodes
             self.num_nodes = data.number_of_nodes()
@@ -20,23 +21,22 @@ class Graph:
             self.num_nodes = data[0]['num_nodes']
             self.num_edges = len(data[0]['edge_index'][0])
 
-        self._data = data
-        self._nx_Graph = None
-        self._nx_DiGraph = None
-        self._PyG = None
-        self._OGB = None
-
-
+        self.__data = data
+        self.__nx_Graph = None
+        self.__nx_DiGraph = None
+        self.__PyG = None
+        self.__OGB = None
+        self.single_representation = single_representation
 
     def nx_Graph(self):
-        if self._nx_Graph == None:
-            data = self._data
+        if self.__nx_Graph == None:
+            data = self.__data
             if isinstance(data, nx.Graph):
                 G = data
             elif isinstance(data, nx.DiGraph):
                 G = data.to_undirected()
             elif isinstance(data, pyg.data.Data):
-                G = pyg.utils.to_networkx(data, ['x'], to_undirected=True)
+                G = pyg.utils.to_networkx(data, ['x', 'y'], to_undirected=True)
             elif isinstance(data, tuple):
                 num_nodes = data[0]['num_nodes']
                 edge_index = data[0]['edge_index']
@@ -59,20 +59,25 @@ class Graph:
                         feat_dict.update({'x': node_feat[i]})
                 
 
-            self._nx_Graph = G
+            self.__nx_Graph = G
+            if self.single_representation:
+                self.__nx_DiGraph = None
+                self.__PyG = None
+                self.__OGB = None
+                self.__data = self.__nx_Graph
 
-        return self._nx_Graph
+        return self.__nx_Graph
 
 
     def nx_DiGraph(self):
-        if self._nx_DiGraph == None:
-            data = self._data
+        if self.__nx_DiGraph == None:
+            data = self.__data
             if isinstance(data, nx.Graph):
                 G = data.to_directed()
             if isinstance(data, nx.DiGraph):
                 G = data
             elif isinstance(data, pyg.data.Data):
-                G = pyg.utils.to_networkx(data, ['x'], to_undirected=False)
+                G = pyg.utils.to_networkx(data, ['x', 'y'], to_undirected=False)
             elif isinstance(data, tuple):
                 num_nodes = data[0]['num_nodes']
                 edge_index = data[0]['edge_index']
@@ -93,14 +98,19 @@ class Graph:
                     for i, feat_dict in G.nodes(data=True):
                         feat_dict.update({'x': node_feat[i]})
 
-            self._nx_DiGraph = G
+            self.__nx_DiGraph = G
+            if self.single_representation:
+                self.__nx_Graph = None
+                self.__PyG = None
+                self.__OGB = None
+                self.__data = self.__nx_DiGraph
 
-        return self._nx_DiGraph
+        return self.__nx_DiGraph
 
 
     def PyG(self):
-        if self._PyG == None:
-            data = self._data
+        if self.__PyG == None:
+            data = self.__data
             if isinstance(data, nx.Graph):
                 G = pyg.utils.from_networkx(data)
             elif isinstance(data, nx.DiGraph):
@@ -108,20 +118,27 @@ class Graph:
             elif isinstance(data, pyg.data.Data):
                 G = data
             elif isinstance(data, tuple):
-                edge_index = data[0]['edge_index']
+                edge_index_raw = data[0]['edge_index']
+                edge_index = torch.LongTensor([x for x in edge_index_raw])
                 is_undirected = pyg.utils.is_undirected(edge_index)
                 if is_undirected:
                     G = pyg.utils.from_networkx(self.nx_Graph())
                 else:
                     G = pyg.utils.from_networkx(self.nx_DiGraph())
-            self._PyG = G
 
-        return self._PyG
+            self.__PyG = G
+            if self.single_representation:
+                self.__nx_Graph = None
+                self.__nx_DiGraph = None
+                self.__OGB = None
+                self.__data = self.__PyG
+
+        return self.__PyG
 
 
     def OGB(self):
-        if self._OGB == None:
-            data = self._data
+        if self.__OGB == None:
+            data = self.__data
             if isinstance(data, nx.Graph):
                 pass
             elif isinstance(data, nx.DiGraph):
@@ -131,7 +148,7 @@ class Graph:
             elif isinstance(data, tuple):
                 G = data
 
-        return self._OGB
+        return self.__OGB
 
 
     def to_splits(self, num_nodes=None, mode='random'):
@@ -148,7 +165,7 @@ class Graph:
             yield split
 
     def subgraph(self, nodes=None, num_nodes=None):
-        # data = self._data
+        # data = self.__data
         # if isinstance(data, nx.Graph) or isinstance(data, nx.DiGraph):
         #     G = data.subgraph(nodes).copy()
         # elif isinstance(data, pyg.data.Data):

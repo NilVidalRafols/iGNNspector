@@ -4,7 +4,7 @@ import sys
 from torch_geometric.utils import num_nodes
 
 import yaml
-sys_path = '/experiments/analysis'
+sys_path = '/experiments/analysis/ogbn-products'
 sys.path.append(sys.path[0].replace(sys_path, ''))
 
 import ogb.nodeproppred as ogbn
@@ -71,27 +71,29 @@ else:
 
 # Create Graph
 dataset_name = settings['dataset'][2]
-single = settings['single_representation']
 if settings['dataset'][0] == 'ogb':
     if settings['dataset'][1] == 'node_pred':
         dataset = ogbn.NodePropPredDataset(name=dataset_name, root='/tmp')
     elif settings['dataset'][1] == 'link_pred':
         dataset = ogbl.PygLinkPropPredDataset(name=dataset_name, root='/tmp')
-    total_graph = Graph(dataset[0], single_representation=single)
 
-elif settings['dataset'][0] == 'pyg':
-    if settings['dataset'][1] == 'Planetoid':
-        dataset = pyg.datasets.Planetoid(name=dataset_name, root='/tmp')
-        total_graph = Graph(dataset[0], single_representation=single)
+# convert to nx only the training set
+split_idx = dataset.get_idx_split()
+nodes_ini = split_idx['test']
 
-print('graph loaded')
+edge_list = []
+edge_index = dataset[0][0]['edge_index']
+for i in range(len(edge_index[0])):
+    edge_list.append((int(edge_index[0][i]), int(edge_index[1][i])))
 
-if pyg.utils.is_undirected(total_graph.PyG().edge_index):
-    to_nx = lambda g: g.nx_Graph()
-else:
-    to_nx = lambda g: g.nx_DiGraph()
+G = nx.Graph()
 
-print('type finded')
+G.add_nodes_from(nodes_ini)
+G.add_edges_from(edge_list)
+
+total_graph = Graph(G)
+
+to_nx = lambda g: g.nx_Graph()
 
 num_nodes = settings['initial_split_length']
 while num_nodes < total_graph.num_nodes:
@@ -103,7 +105,6 @@ while num_nodes < total_graph.num_nodes:
     # Set the dict that will store the results for this split length
     results = {}
     results['num_nodes'] = num_nodes
-    results['num_edges'] = 0
     results.update({key.__name__: 0.0 for key in functions_split})
     results.update({key.__name__: 0.0 for key in functions_cc})
     results.update({key.__name__: 0.0 for key in functions_split_G})
@@ -116,59 +117,58 @@ while num_nodes < total_graph.num_nodes:
     max_split = settings['max_split'] if 'max_split' in settings else num_splits
     while i < max_split:
         split = next(splits)
-        results['num_edges'] = split.num_edges
         # initialize nx and PyG representations
         to_nx(split)
+        split.PyG()
         # Progress
+        index = splits.index(split) + 1
         print(num_nodes, 'nodes:', end=' ')
-        print('Split', i + 1, 'from', max_split, 'completed')
+        print('Split', index, 'from', len(splits), 'completed')
 
         # parameters: split
         for function in functions_split:
             ini_time = time.time()
             function(to_nx(split))
             duration = time.time() - ini_time
-            results[function.__name__] += duration/num_splits
+            results[function.__name__] += duration/len(splits)
         
         # parameters: connected_component, (biggest)
         nx_cc_func = nx.algorithms.components.strongly_connected_components
-        CCs = sorted(nx_cc_func(split.nx_DiGraph()), key=len, reverse=True)
+        CCs = sorted(nx_cc_func(to_nx(split)), key=len, reverse=True)
         CCs = [to_nx(split).subgraph(c).copy() for c in CCs]
         biggest_cc = CCs[0]
         for function in functions_cc:
             ini_time = time.time()
             function(biggest_cc)
             duration = time.time() - ini_time
-            results[function.__name__] += duration/num_splits
+            results[function.__name__] += duration/len(splits)
 
         # parameters: split, total graph
         for function in functions_split_G:
             ini_time = time.time()
             function(split, total_graph)
             duration = time.time() - ini_time
-            results[function.__name__] += duration/num_splits
+            results[function.__name__] += duration/len(splits)
 
         # parameters: biggest_cc, y
         ini_time = time.time()
         function = nx.attribute_assortativity_coefficient
         function(to_nx(split), 'y')
         duration = time.time() - ini_time
-        results[function.__name__] += duration/num_splits
+        results[function.__name__] += duration/len(splits)
 
         # parameters: edge_index, y
-        split.PyG()
         ini_time = time.time()
         function = pyg.utils.homophily_ratio
         function(split.PyG().edge_index, split.PyG().y)
         duration = time.time() - ini_time
-        results[function.__name__] += duration/num_splits
+        results[function.__name__] += duration/len(splits)
 
-        i += 1
     # After compliting a split size experiment, add all functions duration
     # to save the total time
     total_time = 0.0
     for key, t in results.items():
-        if key != 'total' and key != 'num_nodes' and key != 'num_edges':
+        if key != 'total' and key != 'num_nodes':
             total_time += t
     results['total'] = total_time
     print('Avarage time for', num_nodes, 'nodes is', total_time, 'seconds')

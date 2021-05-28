@@ -1,0 +1,11 @@
+table_paths: 
+  - experiments/analysis/PubMed/time_table_PubMed_2.csv
+  - experiments/analysis/CiteSeer/time_table_CiteSeer_2.csv
+  - experiments/analysis/ogbn-arxiv/time_table_ogbn-arxiv.csv
+
+scale: normal
+annotate: true
+
+plots:
+  - output_path: experiments/analysis/plots/x-y/
+    columns: [num_nodes, num_edges]

@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 import csv
 import pandas as pd
@@ -34,10 +35,17 @@ def generate_plot(tables, plot, settings):
     if settings['scale'] == 'log':
         plt.semilogy()
 
+    x = []
+    y = []
+    z = []
     for table in tables:
         nodes, edges, times = table
-        x, y, z = (nodes, edges, times)
-        plt.scatter(x,y,s=20,c=z,cmap='gnuplot')
+        x += nodes
+        y += edges
+        z += times
+    #plt.scatter(x,y,s=20,c=z,cmap='rainbow')
+    print(z)
+    sns.jointplot(x=x, y=y, hue=z, kind='reg')
 
     plt.xticks(fontsize=8)
     plt.yticks(fontsize=8)
@@ -46,15 +54,15 @@ def generate_plot(tables, plot, settings):
     plt.xlabel('# nodes')
     plt.ylabel('# edges')
     plt.suptitle('node-edge-time correlation', y=0.98, fontsize=10, fontweight='bold')
-    # title = 'ogbg-' + name + ' [' + str(len(x)) + ' graphs]'
-    # plt.title(title, fontsize=9)
+    title = plot['column']
+    plt.title(title, fontsize=9)
     # plt.legend(fontsize=8, loc='best', markerscale=2.0)
 
-    cbar = plt.colorbar()
+    # cbar = plt.colorbar()
     #t = 5*round((len(x)//10)/5)
     #cbar.set_ticks(MultipleLocator(t))
-    cbar.ax.tick_params(labelsize=8)
-    cbar.ax.set_title('time (s)', fontsize=8)
+    # cbar.ax.tick_params(labelsize=8)
+    # cbar.ax.set_title('time (s)', fontsize=8)
 
     plt.grid()
 

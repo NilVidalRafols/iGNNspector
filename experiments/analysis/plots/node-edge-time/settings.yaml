@@ -9,3 +9,11 @@ annotate: true
 plots:
   - output_path: experiments/analysis/plots/node-edge-time/
     column: total
+  - output_path: experiments/analysis/plots/node-edge-time/
+    column: node_connectivity
+  - output_path: experiments/analysis/plots/node-edge-time/
+    column: edge_connectivity
+  - output_path: experiments/analysis/plots/node-edge-time/
+    column: homophily_ratio
+  - output_path: experiments/analysis/plots/node-edge-time/
+    column: attribute_assortativity_coefficient

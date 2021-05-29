@@ -1,14 +1,9 @@
 dataset: [pyg, Planetoid, CiteSeer]
-
-functions:
-  nx:
-    - average_clustering: graph
-    - density: graph
-    - attribute_assortativity_coefficient: cc, attribute
-
 # if node increment is a percentage, it will define the node increase rate by
 # the percentage of the last node count if it is a number, it will increase
 # the node count by that exact amount.
 node_increment: 250
 initial_split_length: 250
-output_path: experiments/analysis/CiteSeer/time_table_CiteSeer_2.csv
+max_splits: 5
+output_path: experiments/analysis/CiteSeer/
+single_representation: True

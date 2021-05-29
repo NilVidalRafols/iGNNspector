@@ -100,23 +100,25 @@ while num_nodes < total_graph.num_nodes:
     # track the possible number of splits of same length
     num_splits = total_graph.num_nodes // num_nodes
     print('generator')
-    # Set the dict that will store the results for this split length
-    results = {}
-    results['num_nodes'] = num_nodes
-    results['num_edges'] = 0
-    results.update({key.__name__: 0.0 for key in functions_split})
-    results.update({key.__name__: 0.0 for key in functions_cc})
-    results.update({key.__name__: 0.0 for key in functions_split_G})
-    results['attribute_assortativity_coefficient'] = 0.0
-    results['homophily_ratio'] = 0.0
-    results['total'] = 0.0
+    # Set the dict that will store the time_results for this split length
+    time_results = {}
+    time_results['num_nodes'] = num_nodes
+    time_results['num_edges'] = 0
+    time_results.update({key.__name__: 0.0 for key in functions_split})
+    time_results.update({key.__name__: 0.0 for key in functions_cc})
+    time_results.update({key.__name__: 0.0 for key in functions_split_G})
+    time_results['attribute_assortativity_coefficient'] = 0.0
+    time_results['homophily_ratio'] = 0.0
+    time_results['total'] = 0.0
+    # Set the dict that will store the value_results for this split length
+    value_results = time_results.copy()
 
     # Run all experiments
     i = 0
     max_split = settings['max_split'] if 'max_split' in settings else num_splits
     while i < max_split:
         split = next(splits)
-        results['num_edges'] = split.num_edges
+        time_results['num_edges'] = split.num_edges
         # initialize nx and PyG representations
         to_nx(split)
         # Progress
@@ -126,9 +128,10 @@ while num_nodes < total_graph.num_nodes:
         # parameters: split
         for function in functions_split:
             ini_time = time.time()
-            function(to_nx(split))
+            value = function(to_nx(split))
             duration = time.time() - ini_time
-            results[function.__name__] += duration/num_splits
+            time_results[function.__name__] += duration/num_splits
+            value_results[function.__name__] += value/num_splits
         
         # parameters: connected_component, (biggest)
         nx_cc_func = nx.algorithms.components.strongly_connected_components
@@ -137,59 +140,69 @@ while num_nodes < total_graph.num_nodes:
         biggest_cc = CCs[0]
         for function in functions_cc:
             ini_time = time.time()
-            function(biggest_cc)
+            value = function(biggest_cc)
             duration = time.time() - ini_time
-            results[function.__name__] += duration/num_splits
+            time_results[function.__name__] += duration/num_splits
+            value_results[function.__name__] += value/num_splits
+
 
         # parameters: split, total graph
         for function in functions_split_G:
             ini_time = time.time()
-            function(split, total_graph)
+            value = function(split, total_graph)
             duration = time.time() - ini_time
-            results[function.__name__] += duration/num_splits
+            time_results[function.__name__] += duration/num_splits
+            value_results[function.__name__] += value/num_splits
 
         # parameters: biggest_cc, y
         ini_time = time.time()
         function = nx.attribute_assortativity_coefficient
-        function(to_nx(split), 'y')
+        value = function(to_nx(split), 'y')
         duration = time.time() - ini_time
-        results[function.__name__] += duration/num_splits
+        time_results[function.__name__] += duration/num_splits
+        value_results[function.__name__] += value/num_splits
 
         # parameters: edge_index, y
         split.PyG()
         ini_time = time.time()
         function = pyg.utils.homophily_ratio
-        function(split.PyG().edge_index, split.PyG().y)
+        value = function(split.PyG().edge_index, split.PyG().y)
         duration = time.time() - ini_time
-        results[function.__name__] += duration/num_splits
+        time_results[function.__name__] += duration/num_splits
+        value_results[function.__name__] += value/num_splits
 
         i += 1
     # After compliting a split size experiment, add all functions duration
     # to save the total time
     total_time = 0.0
-    for key, t in results.items():
+    for key, t in time_results.items():
         if key != 'total' and key != 'num_nodes' and key != 'num_edges':
             total_time += t
-    results['total'] = total_time
+    time_results['total'] = total_time
     print('Avarage time for', num_nodes, 'nodes is', total_time, 'seconds')
-    # write the results in a csv file
-    # path = sys_path + 'ogbn-arxiv_' + str(num_nodes) + '.csv'
-    # with open(path, 'w', newline='') as f:
-    #     w = csv.writer(f)
-    #     w.writerow(['function', 'time'])
-    #     for key, value in results.items():
-    #         w.writerow([key,value])
 
-    if os.path.exists(settings['output_path']):
-        with open(settings['output_path'], 'a', newline='') as f:
-            w = csv.DictWriter(f, results.keys())
-            w.writerow(results)
-
+    # write time_results in a csv file
+    out_path = settings['output_path'] + dataset_name + '_times.csv'
+    if os.path.exists(out_path):
+        with open(out_path, 'a', newline='') as f:
+            w = csv.DictWriter(f, time_results.keys())
+            w.writerow(time_results)
     else:
-        with open(settings['output_path'], 'w', newline='') as f:
-            w = csv.DictWriter(f, results.keys())
+        with open(out_path, 'w', newline='') as f:
+            w = csv.DictWriter(f, time_results.keys())
             w.writeheader()
-            w.writerow(results)
+            w.writerow(time_results)
+    # write value_results in a csv file
+    out_path = settings['output_path'] + dataset_name + '_values.csv'
+    if os.path.exists(out_path):
+        with open(out_path, 'a', newline='') as f:
+            w = csv.DictWriter(f, value_results.keys())
+            w.writerow(value_results)
+    else:
+        with open(out_path, 'w', newline='') as f:
+            w = csv.DictWriter(f, value_results.keys())
+            w.writeheader()
+            w.writerow(value_results)
 
     num_nodes = node_increment(num_nodes)
 

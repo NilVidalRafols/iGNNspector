@@ -4,6 +4,7 @@ dataset: [pyg, Planetoid, CiteSeer]
 # the node count by that exact amount.
 node_increment: 250
 initial_split_length: 250
-max_splits: 5
-output_path: experiments/analysis/CiteSeer/
-single_representation: True
+#max_splits: 3
+output_path: experiments/analysis/CiteSeer/times-values/
+single_representation: False
+title: ''

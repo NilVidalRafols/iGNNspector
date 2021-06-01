@@ -1,0 +1,7 @@
+table_path: experiments/analysis/CiteSeer/times-values/times_.csv
+scale: normal
+# annotate: true
+
+output_path: experiments/analysis/plots/time-bars/
+column: num_nodes
+title: CiteSeer

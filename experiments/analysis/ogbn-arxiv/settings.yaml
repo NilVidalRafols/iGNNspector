@@ -1,16 +1,15 @@
 dataset: [ogb, node_pred, ogbn-arxiv]
-
-functions:
-  nx:
-    - average_clustering: graph
-    - density: graph
-    - attribute_assortativity_coefficient: cc, attribute
-
 # if node increment is a percentage, it will define the node increase rate by
-# the percentage of the last node count if it is a number, it will increase
+# the percentage of the last node count. If it is a number, it will increase
 # the node count by that exact amount.
 node_increment: 25%
 initial_split_length: 500
-max_split: 5
-output_path: experiments/analysis/ogbn-arxiv/time_table_ogbn-arxiv.csv
+max_splits: 5
+output_path: experiments/analysis/ogbn-arxiv/times-values/
 single_representation: False
+
+# functions:
+#   nx:
+#     - average_clustering: graph
+#     - density: graph
+#     - attribute_assortativity_coefficient: cc, attribute

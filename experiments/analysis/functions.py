@@ -1,24 +1,31 @@
 import networkx as nx
 import torch_geometric as pyg
+from ignnspector.data import Graph
 
 
 # Define some custom functions
-def real_avg_degree(split, G):
-    nodes = split.nx_DiGraph().nodes
-    nx_G = G.nx_DiGraph()
+def real_avg_degree(split, G, to_nx):
+    nodes = to_nx(split).nodes
+    if split.directed:
+        nx_G = G.nx_DiGraph()
+    else:
+        nx_G = G.nx_Graph()
     real_degree_sequence = sorted([d for n, d in nx_G.degree(nodes)])
     real_avg_degree = sum(real_degree_sequence) / len(nodes)
     return real_avg_degree
 
 def false_avg_degree(nx_split):
     degree_sequence = sorted([d for n, d in nx_split.degree()])
-    avg_degree = sum(degree_sequence) / split.num_nodes
+    avg_degree = sum(degree_sequence) / nx_split.number_of_nodes()
     return avg_degree
 
-def edge_cut(split, G):
-    nx_split = split.nx_DiGraph()
+def edge_cut(split, G, to_nx):
+    nx_split = to_nx(split)
     nodes = nx_split.nodes
-    nx_G = G.nx_DiGraph()
+    if split.directed:
+        nx_G = G.nx_DiGraph()
+    else:
+        nx_G = G.nx_Graph()
     edge_cut = 0
     for n in nodes:
         rd = nx_G.degree(n)
@@ -43,19 +50,3 @@ functions_split_G = [
     real_avg_degree,
     edge_cut
 ]
-
-functions = [
-    (false_avg_degree, ['graph']),
-    (nx.algorithms.cluster.average_clustering, ['graph']),
-    (nx.density, ['graph']),
-    (nx.average_shortest_path_length, ['biggest_cc']),
-    (nx.diameter, ['biggest_cc']),
-    (nx.radius, ['biggest_cc']),
-    (nx.algorithms.connectivity.connectivity.node_connectivity, ['biggest_cc']),
-    (nx.algorithms.connectivity.connectivity.edge_connectivity, ['biggest_cc']),
-    (real_avg_degree, ['graph', 'total_graph']),
-    (edge_cut, ['graph', 'total_graph'])
-]
-
-def run():
-    pass

@@ -43,14 +43,13 @@ def generate_plot(tables, plot, settings):
         x += nodes
         y += edges
         z += times
-    #plt.scatter(x,y,s=20,c=z,cmap='rainbow')
-    print(z)
-    sns.jointplot(x=x, y=y, hue=z, kind='reg')
+    plt.scatter(x,y,s=20,c=z,cmap='rainbow')
+    # sns.jointplot(x=x, y=y, hue=z, kind='reg')
 
     plt.xticks(fontsize=8)
     plt.yticks(fontsize=8)
 
-    #plt.yticks(np.arange(min(y), max(y)+1, step=100))
+    # plt.yticks(np.arange(min(y), max(y)+1, step=100))
     plt.xlabel('# nodes')
     plt.ylabel('# edges')
     plt.suptitle('node-edge-time correlation', y=0.98, fontsize=10, fontweight='bold')
@@ -58,15 +57,18 @@ def generate_plot(tables, plot, settings):
     plt.title(title, fontsize=9)
     # plt.legend(fontsize=8, loc='best', markerscale=2.0)
 
-    # cbar = plt.colorbar()
-    #t = 5*round((len(x)//10)/5)
-    #cbar.set_ticks(MultipleLocator(t))
-    # cbar.ax.tick_params(labelsize=8)
-    # cbar.ax.set_title('time (s)', fontsize=8)
+    cbar = plt.colorbar()
+    # t = 5*round((len(x)//10)/5)
+    # cbar.set_ticks(MultipleLocator(t))
+    cbar.ax.tick_params(labelsize=8)
+    cbar.ax.set_title('time (s)', fontsize=8)
 
     plt.grid()
 
-    path_out = plot['output_path'] + plot['column'] + '.png'
+    path_out = plot['output_path'] + plot['column']
+    if 'title' in settings:
+        path_out += '_' + settings['title']
+    path_out += '.png'
     plt.savefig(path_out)
     plt.close()
 

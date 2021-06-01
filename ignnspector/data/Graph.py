@@ -1,3 +1,4 @@
+from networkx import relabel
 from networkx.classes.function import to_undirected
 import torch
 from ignnspector.analysis.reports import GraphReport
@@ -13,13 +14,17 @@ class Graph:
             #self.nodes = data.nodes
             self.num_nodes = data.number_of_nodes()
             self.num_edges = data.size()
+            self.directed = True if isinstance(data, nx.DiGraph) else False
         elif isinstance(data, pyg.data.Data):
             #self.nodes = list(range(data.num_nodes))
             self.num_nodes = data.num_nodes
             self.num_edges = data.num_edges
+            self.directed = not pyg.utils.is_undirected(data.edge_index)
         elif isinstance(data, tuple):
             self.num_nodes = data[0]['num_nodes']
             self.num_edges = len(data[0]['edge_index'][0])
+            edge_index = torch.LongTensor(data[0]['edge_index'])
+            self.directed = not pyg.utils.is_undirected(edge_index)
 
         self.__data = data
         self.__nx_Graph = None
@@ -118,13 +123,15 @@ class Graph:
             elif isinstance(data, pyg.data.Data):
                 G = data
             elif isinstance(data, tuple):
-                edge_index_raw = data[0]['edge_index']
-                edge_index = torch.LongTensor([x for x in edge_index_raw])
-                is_undirected = pyg.utils.is_undirected(edge_index)
-                if is_undirected:
-                    G = pyg.utils.from_networkx(self.nx_Graph())
-                else:
-                    G = pyg.utils.from_networkx(self.nx_DiGraph())
+                edge_index = torch.LongTensor(data[0]['edge_index'])
+                x = torch.LongTensor(data[0]['node_feat'])
+                y = torch.LongTensor([label[0] for label in data[1]])
+                G = pyg.data.Data(x=x, y=y, edge_index=edge_index)
+                # is_undirected = pyg.utils.is_undirected(edge_index)
+                # if is_undirected:
+                #     G = pyg.utils.from_networkx(self.nx_Graph())
+                # else:
+                #     G = pyg.utils.from_networkx(self.nx_DiGraph())
 
             self.__PyG = G
             if self.single_representation:
@@ -165,17 +172,30 @@ class Graph:
             yield split
 
     def subgraph(self, nodes=None, num_nodes=None):
+        if num_nodes != None:
+            nodes = list(range(min(num_nodes, self.num_nodes)))
+            random.shuffle(nodes)
+
         # data = self.__data
         # if isinstance(data, nx.Graph) or isinstance(data, nx.DiGraph):
         #     G = data.subgraph(nodes).copy()
         # elif isinstance(data, pyg.data.Data):
-        #     G = pyg.utils.to_networkx(data, ['x'], to_undirected=False)
-        #     G = G.subgraph(nodes).copy()
+        #     x = data.x[nodes]
+        #     y = data.y[nodes]
+        #     edge_index, _ = self.subgraph(nodes)
+        #     G = pyg.data.Data(x=x, edge_index=edge_index, y=y)
         # elif isinstance(data, tuple):
-        if num_nodes != None:
-            nodes = list(range(min(num_nodes, self.num_nodes)))
-            random.shuffle(nodes)
+        #     tmp_G = self.PyG()
+        #     nodes = torch.LongTensor(nodes)
+        #     x = tmp_G.x[nodes]
+        #     y = tmp_G.y[nodes]
+        #     edge_index = torch.LongTensor(data[0]['edge_index'])
+        #     subgraph = pyg.utils.subgraph
+        #     edge_index, _ = subgraph(subset=nodes, edge_index=edge_index, relabel_nodes=True)
+        #     G = pyg.data.Data(x=x, edge_index=edge_index, y=y)
         
-        G = self.nx_DiGraph().subgraph(nodes).copy()
-        
+        if self.directed:
+            G = self.nx_DiGraph().subgraph(nodes).copy()
+        else:
+            G = self.nx_Graph().subgraph(nodes).copy()
         return Graph(G)

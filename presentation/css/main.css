@@ -1,0 +1,67 @@
+body {
+    /* background-color: #5ac2c2; */
+    /* --e-global-color-accent: #61ce70;
+    --e-global-color-24cb6440: #4054B2;
+    --e-global-color-612a6427: #23A455;
+    --e-global-color-5da9ef4f: #000;
+    --e-global-color-6f6bd1a4: #FFF;
+    --e-global-color-6ff3f7ee: #1A6C7A; */
+    
+}
+
+i {
+    height: 10px;
+    width: 10px;
+}
+
+th, td {
+    text-align: left;
+}
+
+tbody tr:hover {
+    background-color: #00000025;
+    cursor: pointer;
+}
+
+.ignn-btn {
+    background-color: #00ACAC;
+    border-radius: 10px;
+    border-color: #00ACAC;
+}
+
+.bubble {
+    border-color: #00ACAC;
+    border-style: solid;
+    border-radius: 10px;
+    border-width: 2px;
+}
+
+#explorer {
+    height: 300px;
+    width: 100%;
+    max-height: 100%;
+    display: none
+}
+
+#saved-explorer {
+    width: 100%;
+    height: 100px;
+    max-height: 100%;
+
+}
+
+.table-scroll {
+    height:150px;
+  overflow:auto;  
+  margin-top:20px;
+}
+
+thead {
+    position: sticky;
+    border-bottom: 2px solid #00ACAC;
+}
+
+span.bubble {
+    min-width: 50px;
+
+}

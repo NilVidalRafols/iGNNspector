@@ -2,58 +2,78 @@
 <html>
     <head>
         <title>iGNNspector</title>
+        <!--BOOTSTRAP-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">        <!--JQUERY-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-        <link rel="stylesheet" src="CSS/style.css">
+        <link rel="stylesheet" href="/CSS/main.css">
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&display=swap" rel="stylesheet"> 
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type='text/javascript'src="/JS/main.js"></script>
     </head>
 
 <body>
-    <header>
-        <h1>My Curriculum</h1>
+    <header class="m-4">
+        <h1>iGNNspector</h1>
     </header>
 
-    <main>
-        <label for="myfile">Select a file:</label>
-        <input type="file" id="myfile" name="myfile">
-        <div>
-            <div id="image">
-                <!-- <img src="armin.jpg" width="350" height="200"/> -->
+    <div class="container-fluid ml-3 mr-3">
+        <div class="row">
+            <div class="col-xl" id="graph-analysis">
+                <span class="row p-2">
+                    <h4>Graph analysis</h4><i class="fa fa-info-circle ml-2" aria-hidden="true"></i>
+                </span>
+                <div class="row p-2">
+                    <span class="col-3 bubble" id="selected-graph"></span>
+                    <div class="col">
+                        <button id="browse-btn" class="btn btn-primary ignn-btn" style="display: inline;">Browse</button>
+                        <button id="select-btn" class="btn btn-primary ignn-btn " disabled>Select file</button>
+                    </div>
+                </div>
+
+                <!--EXPLORER-->
+                <div class="row">
+                    <div class="bubble p-3 m-2 table-scroll" id="explorer">
+                        <table style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Size (MB)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--SAVED EXPLORER-->
+                <div class="row">
+                    <div class="bubble p-3 m-2 table-scroll" id="saved-explorer">
+                        <table style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div>
-                <h2>Nil Vidal Ràfols</h2>
-                <ul>
-                    <li><b>email:</b> nul.vidal.rafols@estudiantat.upc.edu</li>
-                    <li><b>languages:</b> Catalan, Spanish, English</li>
-                    <li><b>location:</b> Spain</li>
-                    <li><b>interests:</b> Shingeki</li>
-                </ul>
+            <div class="col-xl" id="proposals">
+                <span class="row p-2">
+                    <h4>Proposals</h4><i class="fa fa-info-circle ml-2" aria-hidden="true"></i>
+                </span>
             </div>
-            <div class="icons">
-                <a href="http://www.github.com/NilVidalRafols">
-                    <i class="fab fa-github"></i>
-                </a>
-                <i class="fab fa-linkedin"></i>
-            </div>    
+    
         </div>
-    </main>
-
-    <section>
-        <h2>Expirience</h2>
-        <h3>Lugar de trabajo <span>November 2020 - Now</span></h3>
-        <p>Description</p>
-    </section>
-
-    <section>
-        <h2>Projects</h2>
-        <h3><a>Rooms?</a></h3>
-        <p>Description</p>
-    </section>
-
-
-    <footer>
-        <p>made with <i class="fa"></i></p>
-    </footer>
+    </div>
 </body>
 
 </html>

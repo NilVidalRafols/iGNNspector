@@ -1,0 +1,8 @@
+ignnspector:
+  'split, full_graph':
+    
+
+networkx:
+  cc:
+    - 
+torch_geometric:

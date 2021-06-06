@@ -8,9 +8,16 @@ from ignnspector.analysis.reports import *
 from ignnspector.analysis.proposers import *
 
 class Analyzer:
-    def __init__(self, graph=None):
-        if isinstance(graph, Graph):
-            self.graph = graph
+    def __init__(self, time=None, split_size=None, num_splits=None):
+        self.time = time
+        self.split_size = split_size
+        self.num_splits = num_splits
+        # per solucionar la questio del tems d'execucio, 
+        # podria tenir la funcio entrenada i llavors, 
+        # comencar amb pocs nodes i veue si la funcio dona un resultat
+        # mes gran o mes petit del que volem,
+        # llavors anem iterant fins que trobem un nombre de nodes optim
+
 
     def analyze_metrics(graph=None, metrics=None):
         if metrics == None:

@@ -20,7 +20,7 @@
         <h1>iGNNspector</h1>
     </header>
 
-    <div class="container-fluid ml-3 mr-3">
+    <div class="container-xl m-3">
         <div class="row">
             <div class="col-xl" id="graph-analysis">
                 <span class="row p-2">
@@ -30,39 +30,68 @@
                     <span class="col-3 bubble" id="selected-graph"></span>
                     <div class="col">
                         <button id="browse-btn" class="btn btn-primary ignn-btn" style="display: inline;">Browse</button>
-                        <button id="select-btn" class="btn btn-primary ignn-btn " disabled>Select file</button>
+                        <button id="analyse-btn" class="btn btn-primary ignn-btn " style="display: inline;" disabled>Analyse</button>
                     </div>
                 </div>
-
                 <!--EXPLORER-->
-                <div class="row">
-                    <div class="bubble p-3 m-2 table-scroll" id="explorer">
-                        <table style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Size (MB)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                
-                            </tbody>
-                        </table>
+                <div class="row" id="stage-0">
+                    <div class="col">
+                        <div class="row">
+                            <div class="bubble p-3 m-2 table-scroll" id="explorer">
+                                <table style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Size (MB)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!--SAVED EXPLORER-->
+                        <div class="row">
+                            <div class="bubble p-3 m-2 table-scroll" id="saved-explorer">
+                                <table style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!--GRAPH ANALYSIS SETTINGS-->
+                        <div class="row">
+                            <div class="bubble p-3 m-2" style="width:100%" id="analysis-settings">
+                                <p>How much time are you willing to spend analysing the graph?<i class="fa fa-info-circle ml-2" aria-hidden="true"></i></p>
+                                <label for="analysis-time" >Duration (in minutes):
+                                    <input type="number" class="form-control" style="width:25%; display:inline;" id="analysis-time">
+                                </label>
+                            </div>        
+                        </div>
                     </div>
                 </div>
-                <!--SAVED EXPLORER-->
-                <div class="row">
-                    <div class="bubble p-3 m-2 table-scroll" id="saved-explorer">
-                        <table style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
+                <div class="row" id="stage-1">
+                    <div class="row">
+                        <div class="col m-2">
+                            <p class="message" id="generating-graph">Generating graph... (if the graph is large, this operation might take several minutes).</p>
+                            <p class="message" id="not-graph">Can not generate graph from this file content.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="stage-2">
+                    <div class="row">
+                        <div class="col m-2">
+                            <p class="message" id="graph-generated">Graph generated successfully.</p>
+                            <p class="message" id="analysing-graph">Analysing graph (maximum estimated time: ).</p>
+                            <p class="message" id="analysed-graph">Graph analysed successfully.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -70,8 +99,28 @@
                 <span class="row p-2">
                     <h4>Proposals</h4><i class="fa fa-info-circle ml-2" aria-hidden="true"></i>
                 </span>
+                <!--PROPOSALS SETTINGS-->
+                <div class="row" id="stage-2">
+                    <div class="bubble p-3 m-2" id="proposals-settings">
+                        <p>What are your preferences?</p>
+                        <div class="form-check-inline" >
+                            <label class="form-check-label" for="check1">
+                              <input type="checkbox" class="form-check-input" id="check1" name="memory" value="memory" checked>Memory efficiency
+                            </label>
+                        </div>
+                        <div class="form-check-inline" >
+                            <label class="form-check-label" for="check2">
+                                <input type="checkbox" class="form-check-input" id="check2" name="time" value="time" checked>Time efficiency
+                            </label>
+                        </div>        
+                        <div class="form-check-inline" >
+                            <label class="form-check-label" for="check3">
+                                <input type="checkbox" class="form-check-input" id="check3" name="precision" value="precision" checked>Precision
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
-    
         </div>
     </div>
 </body>

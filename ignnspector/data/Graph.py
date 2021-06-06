@@ -1,37 +1,71 @@
+from pathlib import Path
 from networkx import relabel
 from networkx.classes.function import to_undirected
+from networkx.readwrite.gexf import read_gexf
+from networkx.readwrite.gml import read_gml
+from networkx.readwrite.gpickle import read_gpickle
+from networkx.readwrite.graphml import read_graphml
+from networkx.readwrite.nx_yaml import read_yaml
 import torch
-from ignnspector.analysis.reports import GraphReport
-
 import networkx as nx
 import torch_geometric as pyg
-
 import random
+import pickle
+
+from ignnspector.analysis.reports import GraphReport
+
 
 class Graph:
     def __init__(self, data, single_representation=False):
-        if isinstance(data, nx.Graph) or isinstance(data, nx.DiGraph):
-            #self.nodes = data.nodes
-            self.num_nodes = data.number_of_nodes()
-            self.num_edges = data.size()
-            self.directed = True if isinstance(data, nx.DiGraph) else False
-        elif isinstance(data, pyg.data.Data):
-            #self.nodes = list(range(data.num_nodes))
-            self.num_nodes = data.num_nodes
-            self.num_edges = data.num_edges
-            self.directed = not pyg.utils.is_undirected(data.edge_index)
-        elif isinstance(data, tuple):
-            self.num_nodes = data[0]['num_nodes']
-            self.num_edges = len(data[0]['edge_index'][0])
-            edge_index = torch.LongTensor(data[0]['edge_index'])
-            self.directed = not pyg.utils.is_undirected(edge_index)
+        if isinstance(data, Path):
+            G = self.get_data_from_path(data)
+        else:
+            G = self.get_graph_from_data(data)
 
-        self.__data = data
+        self.__data = G
         self.__nx_Graph = None
         self.__nx_DiGraph = None
         self.__PyG = None
         self.__OGB = None
         self.single_representation = single_representation
+
+    def get_data_from_path(self, path):
+        with open(path.absolute, 'r') as f:
+            if path.suffix == '.gexf':
+                data = read_gexf(f)
+            elif path.suffix == '.gml':
+                data = read_gml(f)
+            elif path.suffix == '.graphml':
+                data = read_graphml(f)
+            elif path.suffix == '.yaml' or path.suffix == '.yml':
+                data = read_yaml(f)
+            elif path.suffix == '.gpickle':
+                data = read_gpickle(f)
+            elif path.suffix == '.pickle':
+                data = pickle.load(f)
+        
+        G = self.get_graph_from_data(data)
+        return G
+
+    def get_graph_from_data(self, data):
+        if isinstance(data, nx.Graph) or isinstance(data, nx.DiGraph):
+            #self.nodes = data.nodes
+            self.num_nodes = data.number_of_nodes()
+            self.num_edges = data.size()
+            self.directed = True if isinstance(data, nx.DiGraph) else False
+            self.__data = data
+        elif isinstance(data, pyg.data.Data):
+            #self.nodes = list(range(data.num_nodes))
+            self.num_nodes = data.num_nodes
+            self.num_edges = data.num_edges
+            self.directed = not pyg.utils.is_undirected(data.edge_index)
+            self.__data = data
+        elif isinstance(data, tuple):
+            self.num_nodes = data[0]['num_nodes']
+            self.num_edges = len(data[0]['edge_index'][0])
+            edge_index = torch.LongTensor(data[0]['edge_index'])
+            self.directed = not pyg.utils.is_undirected(edge_index)
+            self.__data = data
 
     def nx_Graph(self):
         if self.__nx_Graph == None:

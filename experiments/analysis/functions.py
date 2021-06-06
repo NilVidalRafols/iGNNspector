@@ -2,7 +2,6 @@ import networkx as nx
 import torch_geometric as pyg
 from ignnspector.data import Graph
 
-
 # Define some custom functions
 def real_avg_degree(split, G, to_nx):
     nodes = to_nx(split).nodes

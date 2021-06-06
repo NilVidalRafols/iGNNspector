@@ -1,5 +1,35 @@
 
 import networkx as nx
+import yaml
+
+from ignnspector.analysis.functions import *
+
+
+def analyze(graph, time=None, split_size=None, num_splits=None):
+    # per solucionar la questio del tems d'execucio, 
+    # podria tenir la funcio entrenada i llavors, 
+    # comencar amb pocs nodes i veue si la funcio dona un resultat
+    # mes gran o mes petit del que volem,
+    # llavors anem iterant fins que trobem un nombre de nodes optim
+
+def analyze_metrics(graph, metrics=None, split_size=None, num_splits=None):
+    report = {}
+    splits = graph.to_splits()
+
+    nx_graph = graph.nx_DiGraph() if graph.directed else graph.nx_Graph()
+    # run ignnspector functions
+    for function in ignnspector_functions:
+        if metrics != None and not function.__name__ in metrics:
+            continue
+        report[function.__name__] = function()
+    # run networkx functions
+    functions = [
+            nx.algorithms.cluster.average_clustering,
+    nx.density,
+
+    ]
+
+    for function in 
 
 def available_metrics_for(graph):
     pass

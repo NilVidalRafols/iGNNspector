@@ -4,6 +4,8 @@ from pathlib import Path
 from datetime import datetime
 
 import persistence as per
+from ignnspector.data import Graph
+from ignnspector.analysis.
 
 #app settings needed during the execution of the app
 app = {}
@@ -11,7 +13,7 @@ app = {}
 @eel.expose
 def request_paths(name):
     if name == "" or name == None:
-        app['explorer_path'] = per.get_starting_path()
+        app['explorer_path'] = Path(per.get_starting_path())
         path = app['explorer_path']
     elif name == "..":
         path = app['explorer_path'].parent
@@ -53,8 +55,27 @@ def request_saved_reports():
     eel.set_saved_reports(content)
 
 @eel.expose
-def set_graph(name, is_saved):
-    graph 
+def analyse_graph(name, is_saved):
+    if is_saved:
+        saved_reports = per.get_saved_reports()
+        report = next((x for x in saved_reports if x['name'] == name), None)
+        G = Graph().report = report
+        app['graph'] = G
+    else:
+        eel.message('generating-graph')
+        try:
+            G = Graph(app['file_path'])
+        except Exception:
+            eel.message('not-graph')
+        else:
+            # enter stage 2 (showw analysis results)
+            eel.set_stage(2)
+            # the graph has been generated successfully
+            eel.message('')
+            eel.message('graph-generated')
+            # analyse the graph
+            eel.message('analysing-graph')
+            
 
 def close_callback(route, websockets):
     if not websockets:

@@ -11,7 +11,24 @@ def analyze(graph, time=None, split_size=None, num_splits=None):
     # comencar amb pocs nodes i veue si la funcio dona un resultat
     # mes gran o mes petit del que volem,
     # llavors anem iterant fins que trobem un nombre de nodes optim
+    split_size, num_splits = complete_parameters(graph, 
+                                                 time, split_size, num_splits)
 
+def complete_parameters(time, split_size, num_splits):
+    # case 0 (None, None, None)
+    # analize all the graph
+    # case 1 (None, None, num_splits)
+    # split_size = nodes // num_splits
+    # case 2 (None, split_size, num_splits)
+    # case 3 (None, split_size, None)
+    # num_splits = nodes // split_size
+
+    # case 4 (time, split_size, None)
+    
+    # case 5 (time, None, split_size)
+
+    # case 6 (time, split_size, num_splits)
+    return split_size, num_splits
 def analyze_metrics(graph, metrics=None, split_size=None, num_splits=None):
     report = {}
     splits = graph.to_splits()

@@ -53,19 +53,17 @@ class Graph:
             self.num_nodes = data.number_of_nodes()
             self.num_edges = data.size()
             self.directed = True if isinstance(data, nx.DiGraph) else False
-            self.__data = data
         elif isinstance(data, pyg.data.Data):
             #self.nodes = list(range(data.num_nodes))
             self.num_nodes = data.num_nodes
             self.num_edges = data.num_edges
             self.directed = not pyg.utils.is_undirected(data.edge_index)
-            self.__data = data
         elif isinstance(data, tuple):
             self.num_nodes = data[0]['num_nodes']
             self.num_edges = len(data[0]['edge_index'][0])
             edge_index = torch.LongTensor(data[0]['edge_index'])
             self.directed = not pyg.utils.is_undirected(edge_index)
-            self.__data = data
+        return data
 
     def nx_Graph(self):
         if self.__nx_Graph == None:

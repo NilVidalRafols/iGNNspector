@@ -1,0 +1,10 @@
+dataset: [ogb, node_pred, ogbn-arxiv]
+title: 'ogbn-arxiv'
+# if node increment is a percentage, it will define the node increase rate by
+# the percentage of the last node count. If it is a number, it will increase
+# the node count by that exact amount.
+node_increment: 10%
+initial_split_length: 500
+max_splits: 5
+output_path: experiments/analysis/ogb/
+single_representation: False

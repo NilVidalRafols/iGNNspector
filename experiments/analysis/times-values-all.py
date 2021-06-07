@@ -43,6 +43,27 @@ elif settings['dataset'][0] == 'pyg':
     if settings['dataset'][1] == 'Planetoid':
         dataset = pyg.datasets.Planetoid(name=dataset_name, root='/tmp')
         total_graph = Graph(dataset[0], single_representation=single)
+    elif settings['dataset'][1] == 'WikiCS':
+        dataset = pyg.datasets.WikiCS(root='/tmp')
+        total_graph = Graph(dataset[0], single_representation=single)
+    elif settings['dataset'][1] == 'WikipediaNetwork':
+        dataset = pyg.datasets.WikipediaNetwork(name=dataset_name, root='/tmp')
+        total_graph = Graph(dataset[0], single_representation=single)
+    elif settings['dataset'][1] == 'Actor':
+        dataset = pyg.datasets.Actor(root='/tmp')
+        total_graph = Graph(dataset[0], single_representation=single)
+    elif settings['dataset'][1] == 'Amazon':
+        dataset = pyg.datasets.Amazon(name=dataset_name, root='/tmp')
+        total_graph = Graph(dataset[0], single_representation=single)
+    elif settings['dataset'][1] == 'CitationFull':
+        dataset = pyg.datasets.CitationFull(name=dataset_name, root='/tmp')
+        total_graph = Graph(dataset[0], single_representation=single)
+    elif settings['dataset'][1] == 'Flickr':
+        dataset = pyg.datasets.Actor(root='/tmp')
+        total_graph = Graph(dataset[0], single_representation=single)
+    elif settings['dataset'][1] == 'WebKB':
+        dataset = pyg.datasets.WebKB(name=dataset_name, root='/tmp')
+        total_graph = Graph(dataset[0], single_representation=single)
 
 print('graph loaded')
 
@@ -119,7 +140,7 @@ while num_nodes < total_graph.num_nodes:
         # parameters: split, total graph
         for function in functions_split_G:
             ini_time = time.time()
-            value = function(split, total_graph)
+            value = function(split, total_graph, to_nx)
             duration = time.time() - ini_time
             time_results[function.__name__] += duration/max_splits
             value_results[function.__name__] += value/max_splits

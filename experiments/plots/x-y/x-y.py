@@ -1,3 +1,4 @@
+from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import csv
@@ -14,7 +15,8 @@ def get_tables(settings, plot):
     tables = []
     column1 = plot['columns'][0]
     column2 = plot['columns'][1]
-    for path in settings['table_paths']:
+    paths = list(Path(settings['table_paths'][0]).glob(settings['table_paths'][1]))
+    for path in paths:
         with open(path) as f:
             csv_reader = csv.reader(f, delimiter=',')
             x = []

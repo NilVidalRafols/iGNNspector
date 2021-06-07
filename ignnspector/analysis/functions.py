@@ -25,7 +25,7 @@ def false_avg_degree(split):
     avg_degree = sum(degree_sequence) / nx_split.number_of_nodes()
     return avg_degree
 
-def edge_cut(split, full_graph, to_nx):
+def edge_cut(split, full_graph):
     if full_graph.directed:
         nx_graph = full_graph.nx_DiGraph()
         nx_split = split.nx_DiGraph()

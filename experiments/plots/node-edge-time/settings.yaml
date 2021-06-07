@@ -1,0 +1,25 @@
+table_paths: ['experiments/analysis/pyg', 'times_all_*']
+  # - experiments/analysis/PubMed/times-values/times_10s.csv
+  # - experiments/analysis/CiteSeer/times-values/times_.csv
+  # - experiments/analysis/ogbn-arxiv/times-values/times.csv
+  # - experiments/analysis/Cora/times-values/times_10s.csv
+  # # - experiments/analysis/PubMed/time_table_PubMed_2.csv
+  # # - experiments/analysis/CiteSeer/time_table_CiteSeer_2.csv
+  # # - experiments/analysis/ogbn-arxiv/time_table_ogbn-arxiv.csv
+  # # - experiments/analysis/ogbn-products/ogbn-products_times.csv
+
+scale: normal
+annotate: true
+# title: 
+
+plots:
+  - output_path: experiments/plots/node-edge-time/3/
+    column: total
+  # - output_path: experiments/analysis/plots/node-edge-time/2/
+  #   column: node_connectivity
+  # - output_path: experiments/analysis/plots/node-edge-time/2/
+  #   column: edge_connectivity
+  # - output_path: experiments/analysis/plots/node-edge-time/2/
+  #   column: homophily_ratio
+  # - output_path: experiments/analysis/plots/node-edge-time/2/
+  #   column: attribute_assortativity_coefficient

@@ -1,3 +1,4 @@
+from pathlib import Path
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -14,7 +15,8 @@ from matplotlib.ticker import (MultipleLocator, AutoMinorLocator)
 def get_tables(settings, plot):
     tables = []
     column = plot['column']
-    for path in settings['table_paths']:
+    paths = list(Path(settings['table_paths'][0]).glob(settings['table_paths'][1]))
+    for path in paths:
         with open(path) as f:
             csv_reader = csv.reader(f, delimiter=',')
             nodes = []

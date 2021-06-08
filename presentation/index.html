@@ -20,7 +20,7 @@
         <h1>iGNNspector</h1>
     </header>
 
-    <div class="container-xl m-3">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-xl" id="graph-analysis">
                 <span class="row p-2">
@@ -69,6 +69,15 @@
                         <!--GRAPH ANALYSIS SETTINGS-->
                         <div class="row">
                             <div class="bubble p-3 m-2" style="width:100%" id="analysis-settings">
+                                <p><b>Analysis settings</b>
+                                    <i class="fa fa-info-circle ml-2" aria-hidden="true" data-toggle="popover" data-content="You can specify the sample split size that will be analized. If you want, different splits can be analysed to avarage the values out."></i>
+                                </p>
+                                <label for="analysis-time" >Split size (nodes):
+                                    <input type="number" class="form-control" style="width:25%; display:inline;" id="split-size">
+                                </label>
+                                <label for="analysis-time" >Number of splits:
+                                    <input type="number" class="form-control" style="width:25%; display:inline;" id="num-splits">
+                                </label>
                                 <p>How much time are you willing to spend analysing the graph?<i class="fa fa-info-circle ml-2" aria-hidden="true"></i></p>
                                 <label for="analysis-time" >Duration (in minutes):
                                     <input type="number" class="form-control" style="width:25%; display:inline;" id="analysis-time">
@@ -105,17 +114,17 @@
                         <p>What are your preferences?</p>
                         <div class="form-check-inline" >
                             <label class="form-check-label" for="check1">
-                              <input type="checkbox" class="form-check-input" id="check1" name="memory" value="memory" checked>Memory efficiency
+                              <input type="checkbox" class="form-check-input" id="check1" name="memory" value="memory">Memory efficiency
                             </label>
                         </div>
                         <div class="form-check-inline" >
                             <label class="form-check-label" for="check2">
-                                <input type="checkbox" class="form-check-input" id="check2" name="time" value="time" checked>Time efficiency
+                                <input type="checkbox" class="form-check-input" id="check2" name="time" value="time">Time efficiency
                             </label>
                         </div>        
                         <div class="form-check-inline" >
                             <label class="form-check-label" for="check3">
-                                <input type="checkbox" class="form-check-input" id="check3" name="precision" value="precision" checked>Precision
+                                <input type="checkbox" class="form-check-input" id="check3" name="precision" value="precision">Precision
                             </label>
                         </div>
                     </div>

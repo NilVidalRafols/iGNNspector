@@ -1,84 +1,135 @@
 
-import networkx as nx
+from networkx.algorithms.components import connected_components
+from networkx.algorithms.components import strongly_connected_components
 import yaml
+import time as t
 
 from ignnspector.analysis.functions import *
-
+from ignnspector.data import Graph
 
 def analyze(graph, time=None, split_size=None, num_splits=None):
-    # per solucionar la questio del tems d'execucio, 
-    # podria tenir la funcio entrenada i llavors, 
-    # comencar amb pocs nodes i veue si la funcio dona un resultat
-    # mes gran o mes petit del que volem,
-    # llavors anem iterant fins que trobem un nombre de nodes optim
-    split_size, num_splits = complete_parameters(graph, 
-                                                 time, split_size, num_splits)
+    if time != None:
+        report = analyze_with_time(graph, time, split_size, num_splits)
+        return report
 
-def complete_parameters(time, split_size, num_splits):
-    # case 0 (None, None, None)
-    # analize all the graph
-    # case 1 (None, None, num_splits)
-    # split_size = nodes // num_splits
-    # case 2 (None, split_size, num_splits)
-    # case 3 (None, split_size, None)
-    # num_splits = nodes // split_size
+    # get splits to analyze and correct values 
+    # from split_size and num_splits if needed
+    splits, split_size, num_splits = get_splits(graph, split_size, num_splits)
 
-    # case 4 (time, split_size, None)
+    # the characterization of the graph is saved in a dict
+    report = init_report(graph, split_size, num_splits)
+
+    nx = lambda g: g.nx_DiGraph() if g.directed else g.nx_Graph()
+    for  split, i in zip(splits, range(num_splits)):
+        nx(split)
+        # run ignnspector metrics
+        for function, j in zip(ignnspector_functions, range(len(nx_functions))):
+            if j < 1:
+                ini_time = t.time()
+                value = function(split)
+                duration = t.time() - ini_time
+            else:
+                ini_time = t.time()
+                value = function(split, graph)
+                duration = t.time() - ini_time
+            report[function.__name__]['value'] += value / num_splits
+            report[function.__name__]['time'] += duration / num_splits
+
+        # run networkx metrics
+        split_cc = biggest_connected_component(nx(split))
+        for function, j in zip(nx_functions, range(len(nx_functions))):
+            if j < 2:
+                ini_time = t.time()
+                value = function(nx(split))
+                duration = t.time() - ini_time
+            elif j < 7:
+                ini_time = t.time()
+                value = function(split_cc)
+                duration = t.time() - ini_time
+            else:
+                ini_time = t.time()
+                value = function(nx(split), 'y')
+                duration = t.time() - ini_time
+            report[function.__name__]['value'] += value / num_splits
+            report[function.__name__]['time'] += duration / num_splits
+
+        # run torch_geometric metrics
+        split.PyG()
+        for function in pyg_functions:
+            ini_time = t.time()
+            try:
+                value = function(split.PyG().edge_index, split.PyG().y)
+            except Exception:
+                value = 0
+            duration = t.time() - ini_time
+            report[function.__name__]['value'] += value / num_splits
+            report[function.__name__]['time'] += duration / num_splits
     
-    # case 5 (time, None, split_size)
+    return report
 
-    # case 6 (time, split_size, num_splits)
-    return split_size, num_splits
-def analyze_metrics(graph, metrics=None, split_size=None, num_splits=None):
-    report = {}
-    splits = graph.to_splits()
+def get_splits(graph, split_size, num_splits):
+    if split_size == None and num_splits == None:
+        num_splits = 1
+        splits = [graph]
+    elif split_size == None:
+        split_size = graph.num_nodes // num_splits
+        splits = graph.to_splits(split_size)
+    elif num_splits == None:
+        num_splits = graph.num_nodes // split_size
+        splits = graph.to_splits(split_size)
+    else:
+        splits = graph.to_splits(split_size)
+        num_splits = min(graph.num_nodes // split_size, num_splits)
 
-    nx_graph = graph.nx_DiGraph() if graph.directed else graph.nx_Graph()
-    # run ignnspector functions
-    for function in ignnspector_functions:
-        if metrics != None and not function.__name__ in metrics:
-            continue
-        report[function.__name__] = function()
-    # run networkx functions
-    functions = [
-            nx.algorithms.cluster.average_clustering,
-    nx.density,
+    return splits, split_size, num_splits
 
-    ]
+def init_report(graph, split_size, num_splits):
+    report = {
+        'num_nodes': graph.num_nodes,
+        'num_edges': graph.num_edges,
+        'split_size': split_size,
+        'num_splits': num_splits,
+    }
+    for key in ignnspector_functions:
+        report[key.__name__] = {'value':0.0, 'time':0.0}
+    for key in nx_functions:
+        report[key.__name__] = {'value':0.0, 'time':0.0}
+    for key in pyg_functions:
+        report[key.__name__] = {'value':0.0, 'time':0.0}
+    return report
 
-    for function in 
+def biggest_connected_component(graph):
+    if graph.is_directed():
+        ccs = strongly_connected_components(graph)
+        bcc = sorted(ccs, key=len, reverse=True)[0]
+    else:
+        ccs = connected_components(graph)
+        ccs = sorted(ccs, key=len, reverse=True)
+        bcc = sorted(ccs, key=len, reverse=True)[0]
 
-def available_metrics_for(graph):
+    biggest_connected_component = graph.subgraph(bcc).copy()
+    return biggest_connected_component
+
+def analyze_with_time(graph, time, split_size=None, num_splits=None):
     pass
 
-nx.degree_histogram(G)
-nx.algorithms.cluster.average_clustering(G)
-nx.density(G)
-nx.algorithms.components.connected_components(G)
-nx.algorithms.components.strongly_connected_components(G)
-nx.average_shortest_path_length(cc)
-nx.diameter(cc)
-nx.radius(cc)
-nx.algorithms.connectivity.connectivity.node_connectivity(cc)
-nx.algorithms.connectivity.connectivity.edge_connectivity(cc)
-
-metrics_map = [
-    "num_nodes",
-    "num_edges",
-    "num_features",
-    "num_classes",
-    "prediction_type", # What will the model predict (graph/node pred, ...)
-    "learning_method", # inductive/transductive learning
-    "avg_degree",
-    "diameter",
-    "avg_path_length",
-    "radius",
-    "node_connectivity",
-    "edge_connectivity",
-    "avg_clustering_coef",
-    "transitivity",
-    "density",
-    "homophily",
-    "edge_cut"
-    '''...'''
-]
+# metrics_map = [
+#     "num_nodes",
+#     "num_edges",
+#     "num_features",
+#     "num_classes",
+#     "prediction_type", # What will the model predict (graph/node pred, ...)
+#     "learning_method", # inductive/transductive learning
+#     "avg_degree",
+#     "diameter",
+#     "avg_path_length",
+#     "radius",
+#     "node_connectivity",
+#     "edge_connectivity",
+#     "avg_clustering_coef",
+#     "transitivity",
+#     "density",
+#     "homophily",
+#     "edge_cut"
+#     '''...'''
+# ]

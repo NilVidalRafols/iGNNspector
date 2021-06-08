@@ -8,3 +8,4 @@ l = list(path.glob('.gitignore'))
 path2 = Path(l[0])
 if path2.is_file():
     print(path2.stat().st_size)
+

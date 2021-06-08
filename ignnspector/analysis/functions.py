@@ -40,12 +40,13 @@ def edge_cut(split, full_graph):
         edge_cut += rd - d
     return edge_cut
 
-ignnspector_functions = {
+ignnspector_functions = [
+    # Parameters: graph (split)
+    false_avg_degree,
     # Parameters: graph (split), full graph
     real_avg_degree,
-    false_avg_degree,
     edge_cut
-}
+]
 
 nx_functions = [
     # Parameters: graph
@@ -62,5 +63,5 @@ nx_functions = [
 ]
 pyg_functions = [
     # Parameters: edge_index, y
-    pyg.utils.homophily_ratio
+    pyg.utils.homophily
 ]

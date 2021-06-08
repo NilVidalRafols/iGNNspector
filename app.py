@@ -5,7 +5,7 @@ from datetime import datetime
 
 import persistence as per
 from ignnspector.data import Graph
-from ignnspector.analysis.
+from ignnspector.analysis import analyze
 
 #app settings needed during the execution of the app
 app = {}
@@ -60,22 +60,27 @@ def analyse_graph(name, is_saved):
         saved_reports = per.get_saved_reports()
         report = next((x for x in saved_reports if x['name'] == name), None)
         G = Graph().report = report
-        app['graph'] = G
     else:
         eel.message('generating-graph')
         try:
             G = Graph(app['file_path'])
         except Exception:
+            # if the graph can not be read, return '' 
+            # and do not progress to STAGE 2
             eel.message('not-graph')
+            return ''
         else:
-            # enter stage 2 (showw analysis results)
+            # enter STAGE 2 (show analysis results)
             eel.set_stage(2)
             # the graph has been generated successfully
             eel.message('')
             eel.message('graph-generated')
             # analyse the graph
             eel.message('analysing-graph')
-            
+            G.report = analyze(G)
+    app['graph'] = G
+    return report
+
 
 def close_callback(route, websockets):
     if not websockets:

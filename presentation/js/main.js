@@ -1,10 +1,12 @@
 var graph = {
     name: "",
-    is_saved: false
+    is_saved: false,
+    report: {}
 };
 
 var stages = [
-    function () { // graph selection
+    // STAGE 0: graph selection
+    function () {
         // $('#explorer').slideToggle("slow");
         // $('#saved-explorer').slideToggle("slow");
         $('analyse-btn').prop('disabled', true);
@@ -14,19 +16,22 @@ var stages = [
         $('#stage-3').slideUp('slow');
 
     },
-    function () { // analyse graph in the background and notify the user
+    // STAGE 1: analyse graph in the background and notify the user
+    function () {
         $('#stage-0').slideUp('slow');
         $('#stage-1').slideDown('slow');
         $('#stage-2').slideUp('slow');
         $('#stage-3').slideUp('slow');
     },
-    function () { // show results of the analysis and give the user the possibility to download results
+    // STAGE 2: show results of the analysis and give the user the possibility 
+    // to download results
+    function () {
         $('#stage-0').slideUp('slow');
         $('#stage-1').slideUp('slow');
         $('#stage-2').slideDown('slow');
         $('#stage-3').slideUp('slow');
     },
-    function () { // Proposals
+    function () { // STAGE 3: Proposals
         $('#stage-0').slideUp('slow');
         $('#stage-1').slideUp('slow');
         $('#stage-2').slideUp('slow');
@@ -40,19 +45,21 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip({
         placement : 'right'
     });
-    // this button triggers stage 0
+    // this button triggers STAGE 0
     $('#browse-btn').click(function () {
         set_stage(0);
         eel.request_paths($(this).attr('value'));
         $('#explorer').slideToggle("slow");
     });
-    // this button triggers stage 1
+    // this button triggers STAGE 1
     $('#analyse-btn').click(function () {
         set_stage(1);
         var name = $('#selected-graph').text();
         if (name)
-            eel.analyze_graph(graph.name, graph.is_saved);
+            eel.analyse_graph(graph.name, graph.is_saved);
     });
+
+    $('[data-toggle="popover"]').popover()
 
     eel.request_saved_reports();
 });

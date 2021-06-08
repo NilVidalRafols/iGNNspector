@@ -6,6 +6,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error, median_absolute_error
 import csv
 from pathlib import Path
+import pickle
 
 def get_data(paths, column):
     tables = []
@@ -78,6 +79,10 @@ def save_results(model, table, path):
         w = csv.writer(f)
         w.writerows(results)
 
+def save_model(model, path):
+    with open(path + 'time_model.pickle', 'wb') as f:
+        pickle.dump(model, f)
+
 if __name__ == '__main__':
     column = 'total'
     paths = list(Path('experiments/analysis/pyg').glob('times_all_*'))
@@ -96,3 +101,6 @@ if __name__ == '__main__':
 
     for  table, path, in zip(tables, paths):
         save_results(model, table, path)
+    
+    out_path = 'ignnspector/analysis/'
+    save_model(model, out_path)

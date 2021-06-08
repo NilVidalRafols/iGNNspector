@@ -49,7 +49,7 @@ def generate_plot(tables, path, settings):
 
     plt.xlabel(settings['column'][0])
     plt.ylabel('time (s)')
-    plt.title(Path(settings['table_paths'][1]).stem)
+    plt.title(path.stem)
     plt.legend(labels=['real_tame', 'predicted_time'])
     plt.grid()
     

@@ -22,7 +22,6 @@ def get_tables(settings, plot):
             nodes = []
             edges = []
             times = []
-            line_count = 0
             header = next(csv_reader)
             column_index = header.index(column)
             for row in csv_reader:
@@ -45,7 +44,7 @@ def generate_plot(tables, plot, settings):
         x += nodes
         y += edges
         z += times
-    plt.scatter(x,y,s=20,c=z,cmap='rainbow')
+    plt.scatter(x,y,s=15,c=z,cmap='rainbow')
     # sns.jointplot(x=x, y=y, hue=z, kind='reg')
 
     plt.xticks(fontsize=8)

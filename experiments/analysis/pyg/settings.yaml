@@ -1,5 +1,5 @@
-dataset: [pyg, CitationFull, Cora]
-title: Cora
+dataset: [pyg, WebKB, Texas]
+title: Texas
 # if node increment is a percentage, it will define the node increase rate by
 # the percentage of the last node count if it is a number, it will increase
 # the node count by that exact amount.

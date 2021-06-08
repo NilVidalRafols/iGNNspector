@@ -59,7 +59,7 @@ elif settings['dataset'][0] == 'pyg':
         dataset = pyg.datasets.CitationFull(name=dataset_name, root='/tmp')
         total_graph = Graph(dataset[0], single_representation=single)
     elif settings['dataset'][1] == 'Flickr':
-        dataset = pyg.datasets.Actor(root='/tmp')
+        dataset = pyg.datasets.Flickr(root='/tmp')
         total_graph = Graph(dataset[0], single_representation=single)
     elif settings['dataset'][1] == 'WebKB':
         dataset = pyg.datasets.WebKB(name=dataset_name, root='/tmp')

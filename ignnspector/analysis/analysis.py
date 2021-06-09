@@ -50,7 +50,7 @@ def analyze(graph, time=None, split_size=None, num_splits=None):
                 ini_time = t.time()
                 value = function(nx(split), 'y')
                 duration = t.time() - ini_time
-            report[function.__name__]['value'] += value / num_splits
+            report[function.__name__]['value'] += float(value) / num_splits
             report[function.__name__]['time'] += duration / num_splits
 
         # run torch_geometric metrics

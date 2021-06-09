@@ -1,6 +1,6 @@
 import sys
-sys.path.append(sys.path.append('d:\\UNI\\iGNNspector'))
-
+sys_path = '/tests/analysis'
+sys.path.append(sys.path[0].replace(sys_path, ''))
 import yaml
 
 from ignnspector.data import Graph
@@ -12,5 +12,5 @@ total_graph = Graph(dataset[0], single_representation=False)
 
 report = analyze(total_graph, split_size=2000)
 
-with open('tests/analysis/analysis.yaml', 'w') as f:
-    yaml.dump(report)
+with open('persistence/reports/CiteSeer.yaml', 'w') as f:
+    yaml.dump(report, f)

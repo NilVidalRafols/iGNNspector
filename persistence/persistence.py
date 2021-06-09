@@ -19,4 +19,12 @@ def get_starting_path():
         return p.Path.home()
 
 def get_saved_reports():
-    return []
+    stick = '\\' if sys.platform == 'win32' else '/'
+    dir = p.Path('persistence'+stick+'reports')
+    reports = []
+    for path in dir.iterdir():
+        if path.is_file():
+            with open(path, 'r') as f:
+                report = yaml.full_load(f)
+            reports.append(report)
+    return reports

@@ -1,0 +1,41 @@
+name: 'CiteSeer'
+attribute_assortativity_coefficient:
+  time: 0.0015635490417480469
+  value: 0.9322406384936537
+average_clustering:
+  time: 0.006874561309814453
+  value: 0.05030687361944328
+average_shortest_path_length:
+  time: 0.06877255439758301
+  value: 6.9613437290086555
+density:
+  time: 0.0003101825714111328
+  value: 0.0006120560280140071
+diameter:
+  time: 0.0678708553314209
+  value: 17.5
+edge_connectivity:
+  time: 0.09353935718536377
+  value: 1.0
+edge_cut:
+  time: 0.0029747486114501953
+  value: 2662.0
+false_avg_degree:
+  time: 0.00038111209869384766
+  value: 1.2235
+node_connectivity:
+  time: 0.3814336061477661
+  value: 1.0
+num_edges: 10674
+num_nodes: 4230
+num_splits: 2
+radius:
+  time: 0.06783092021942139
+  value: 9.0
+real_avg_degree:
+  time: 0.00047469139099121094
+  value: 2.5545
+split_size: 2000
+torch_geometric.utils.homophily:
+  time: 9.5367431640625e-06
+  value: 0.0

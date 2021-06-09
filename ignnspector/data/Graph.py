@@ -16,7 +16,7 @@ from ignnspector.analysis.reports import GraphReport
 
 
 class Graph:
-    def __init__(self, data, single_representation=False):
+    def __init__(self, data=None, single_representation=False):
         if isinstance(data, Path):
             G = self.get_data_from_path(data)
         else:

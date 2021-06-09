@@ -81,6 +81,11 @@ function set_graph(name, is_saved) {
     $('#selected-graph').text(name);
     $('#analyse-btn').prop('disabled', false);
 }
+eel.expose(set_graph_report)
+function set_graph_report(content) {
+    $('#report-explorer table tbody').html(content);
+
+}
 
 eel.expose(set_saved_reports)
 function set_saved_reports(content) {
@@ -103,4 +108,5 @@ function message(name) {
 eel.expose(set_stage)
 function set_stage(index) {
     stages[index]();
+    message('');
 }

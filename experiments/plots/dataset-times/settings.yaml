@@ -9,5 +9,5 @@ scale: normal
 annotate: true
 
 plots:
-  - output_path: experiments/plots/dataset-times/1/
-    columns: [num_edges, total]
+  - output_path: experiments/plots/dataset-times/2/
+    columns: [num_nodes, total]

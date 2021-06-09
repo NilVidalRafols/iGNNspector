@@ -9,5 +9,5 @@ scale: normal
 annotate: true
 
 
-output_path: experiments/plots/pred-times/2/
-column: [num_edges]
+output_path: experiments/plots/pred-times/3/
+column: [num_nodes]

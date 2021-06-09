@@ -47,8 +47,8 @@ def request_saved_reports():
         content += '<p>There are no saved analysis reports.</p>'
     else:
         content += '<tr><td>'
-        for report_name in list(map(saved_reports, lambda r: r['name'])):
-            content += '<tr>'
+        for report_name in map(lambda r: r['name'], saved_reports):
+            content += f'<tr value="{report_name}">'
             content += '<td>' + report_name + '</td>'
             content += '</tr>'
 
@@ -60,27 +60,41 @@ def analyse_graph(name, is_saved):
         saved_reports = per.get_saved_reports()
         report = next((x for x in saved_reports if x['name'] == name), None)
         G = Graph().report = report
+        # enter STAGE 2 (show analysis results)
+        eel.set_stage(2)
     else:
-        eel.message('generating-graph')
+        eel.message('#generating-graph')
         try:
             G = Graph(app['file_path'])
         except Exception:
             # if the graph can not be read, return '' 
             # and do not progress to STAGE 2
-            eel.message('not-graph')
+            eel.message('')
+            eel.message('#not-graph')
             return ''
         else:
-            # enter STAGE 2 (show analysis results)
-            eel.set_stage(2)
             # the graph has been generated successfully
             eel.message('')
-            eel.message('graph-generated')
+            eel.message('#graph-generated')
             # analyse the graph
-            eel.message('analysing-graph')
+            eel.message('#analysing-graph')
             G.report = analyze(G)
-    app['graph'] = G
-    return report
+            # enter STAGE 2 (show analysis results)
+            eel.set_stage(2)
 
+
+    app['graph'] = G
+    content = ''
+    for k, v in report.items():
+            content += '<tr>'
+            content += '<td>' + k + '</td>'
+            if isinstance(v, dict):
+                content += '<td>' + str(v['value']) + '</td>'
+                content += '<td>' + str(v['time']) + '</td>'
+            else:
+                content += '<td>' + str(v) + '</td>'
+            content += '</tr>'
+    eel.set_graph_report(content)
 
 def close_callback(route, websockets):
     if not websockets:

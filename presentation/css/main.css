@@ -63,6 +63,14 @@ tbody tr:hover {
 
 }
 
+#report-explorer {
+    width: 100%;
+    height: 500px;
+    max-height: 100%;
+
+}
+
+
 .table-scroll {
     height:150px;
     overflow:auto;  

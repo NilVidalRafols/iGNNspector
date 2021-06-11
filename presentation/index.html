@@ -69,19 +69,36 @@
                         <!--GRAPH ANALYSIS SETTINGS-->
                         <div class="row">
                             <div class="bubble p-3 m-2" style="width:100%" id="analysis-settings">
-                                <p><b>Analysis settings</b>
-                                    <i class="fa fa-info-circle ml-2" aria-hidden="true" data-toggle="popover" data-content="You can specify the sample split size that will be analized. If you want, different splits can be analysed to avarage the values out."></i>
-                                </p>
-                                <label for="analysis-time" >Split size (nodes):
-                                    <input type="number" class="form-control" style="width:25%; display:inline;" id="split-size">
-                                </label>
-                                <label for="analysis-time" >Number of splits:
-                                    <input type="number" class="form-control" style="width:25%; display:inline;" id="num-splits">
-                                </label>
-                                <p>How much time are you willing to spend analysing the graph?<i class="fa fa-info-circle ml-2" aria-hidden="true"></i></p>
-                                <label for="analysis-time" >Duration (in minutes):
-                                    <input type="number" class="form-control" style="width:25%; display:inline;" id="analysis-time">
-                                </label>
+                                <div class="row">
+                                    <div class="col">
+                                        <p><b>Analysis settings</b></p>
+                                    </div>
+                                    <div class="col">
+                                        <div class="btn-group">
+                                            <button type="button" id="time-btn" class="btn btn-primary ignn-btn">Time based</button>
+                                            <button type="button" id="split-btn" class="btn btn-primary ignn-btn">Split based</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div id="split-camps" class="p-3">
+                                                <p>Select the number of nodes and the number of sample splits to analyze.</p>
+                                                <label for="split-size" >Split size (nodes):
+                                                    <input type="number" class="form-control" style="width:25%; display:inline;" id="split-size">
+                                                </label>
+                                                <label for="num-splits" >Number of splits:
+                                                    <input type="number" class="form-control" style="width:25%; display:inline;" id="num-splits">
+                                                </label>
+                                            </div>
+                                            <div id="time-camps" class="p-3">
+                                                <p>How much time are you willing to spend analysing the graph?</p>
+                                                <label for="analysis-time" >Duration (in minutes):
+                                                    <input type="number" class="form-control" style="width:25%; display:inline;" id="analysis-time">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>        
                         </div>
                     </div>

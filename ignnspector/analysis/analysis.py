@@ -3,16 +3,22 @@ from networkx.algorithms.components import connected_components
 from networkx.algorithms.components import strongly_connected_components
 import yaml
 import time as t
+import random
+import numpy as np
+from sklearn.linear_model import *
+from sklearn.metrics import mean_squared_error, median_absolute_error
+import csv
+from pathlib import Path
 
 from ignnspector.analysis.functions import *
 from ignnspector.data import Graph
 
-def analyze(graph, time=None, split_size=None, num_splits=None):
+def analyse(graph, time=None, split_size=None, num_splits=None):
     if time != None:
-        report = analyze_with_time(graph, time, split_size, num_splits)
+        report = analyse_with_time(graph, time, split_size, num_splits)
         return report
 
-    # get splits to analyze and correct values 
+    # get splits to analyse and correct values 
     # from split_size and num_splits if needed
     splits, split_size, num_splits = get_splits(graph, split_size, num_splits)
 
@@ -20,7 +26,8 @@ def analyze(graph, time=None, split_size=None, num_splits=None):
     report = init_report(graph, split_size, num_splits)
 
     nx = lambda g: g.nx_DiGraph() if g.directed else g.nx_Graph()
-    for  split, i in zip(splits, range(num_splits)):
+    for  split, _ in zip(splits, range(num_splits)):
+        report['split_num_edges'].append(split.num_edges)
         nx(split)
         # run ignnspector metrics
         for function, j in zip(ignnspector_functions, range(len(nx_functions))):
@@ -88,7 +95,8 @@ def init_report(graph, split_size, num_splits):
         'num_nodes': graph.num_nodes,
         'num_edges': graph.num_edges,
         'split_size': split_size,
-        'num_splits': num_splits,
+        'spit_num_edges': [],
+        'num_splits': num_splits
     }
     for key in ignnspector_functions:
         report[key.__name__] = {'value':0.0, 'time':0.0}
@@ -110,8 +118,92 @@ def biggest_connected_component(graph):
     biggest_connected_component = graph.subgraph(bcc).copy()
     return biggest_connected_component
 
-def analyze_with_time(graph, time, split_size=None, num_splits=None):
-    pass
+# time in seconds
+def analyse_with_time(graph, time):
+    model = get_best_model(graph)
+    split_size, num_splits = get_splits_with_time(graph, model, time)
+    report = analyse(graph, split_size=split_size, num_splits=num_splits)
+
+    return report
+
+def get_best_model(graph):
+    # collection of regression methods 
+    # (the model which gives the best results will be used)
+    models = {"OLS":LinearRegression(), 
+            "R":Ridge(), 
+            "BR":BayesianRidge(),
+            "LL":LassoLars(alpha=.1),
+            "L":Lasso(alpha=0.1),
+            "EN":ElasticNet()}
+
+    # train a linear regressor with 10 samples from 0% nodes to up to 10% nodes
+    one_100 = graph.num_nodes // 100
+    num_splits = 3
+    x = []
+    y = []
+    for split_size in range(0, 10 * one_100, one_100):
+        r = analyse(graph, split_size=split_size, num_splits=num_splits)
+        # prepare data to train the regression model
+        # input data x consist on samples of the pair (num nodes, num edges)
+        num_edges = sum(r['split_num_edges']) // len(r['split_num_edges'])
+        x.append((np.log10(split_size), np.log10(num_edges)))
+        # autput data y consist on the base 10 logarithm of the sum of the 
+        # execution time from all metrics analysed
+        all_times = [value for value in map(lambda d: d['time'], r.values())]
+        total_time = sum(all_times)
+        y.append(np.log10(total_time))
+
+    # train models
+    scores = []
+    for model in models:
+        model.fit(x, y)
+        score = mean_squared_error(y, model.predict(x))
+        scores.append((model, score))
+    # get the model with the best score from (model, score) pairs
+    best_model = min(scores, key=lambda x: x[1])[0]
+
+# perform a binary search over the number of nodes to determine the split_size 
+# needed to analyse the graph with aproximately the same duration that [time]
+def get_splits_with_time(graph, model, time):
+    # divide time for 3, since 3 splits will be used to avarage analysis values
+    time = time / 3
+    split_size, num_splits = search_split_size(model, time, 
+                                                        0, 
+                                                        len(graph.num_nodes))
+    return split_size, num_splits
+
+def search_split_size(graph, model, time, left, right, 
+                        num_splits=3, 
+                        range=30):
+    if right >= left:
+        # predict the execution time with the current split size
+        split_size = left + (right - left) // 2
+        splits = graph.to_splits(split_size)
+        pred_time = 0.0
+        for split, _ in zip(splits, range(num_splits)):
+            x = [(np.log10(split.num_nodes), np.log10(split.num_edges))]
+            pred_time += model.predict(x)[0] / num_splits
+
+        # if the predicted time falls inside the accepted range, 
+        # return the split generator, the split size and the number of splits
+        if pred_time >= time - range and pred_time <= time + range:
+            return split_size, num_splits
+
+        elif pred_time < time - range:
+            return search_split_size(graph, graph, model, time, 
+                                    split_size + 1, 
+                                    right, 
+                                    num_splits, 
+                                    range)
+        else:
+            return search_split_size(graph, graph, model, time, 
+                                    left, 
+                                    split_size - 1, 
+                                    num_splits, 
+                                    range)
+    else:
+        return left, num_splits
+
 
 # metrics_map = [
 #     "num_nodes",

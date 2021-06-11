@@ -3,9 +3,11 @@ import os, random
 from pathlib import Path
 from datetime import datetime
 
+from torch.functional import split
+
 import persistence as per
 from ignnspector.data import Graph
-from ignnspector.analysis import analyze
+from ignnspector.analysis import analyse
 
 #app settings needed during the execution of the app
 app = {}
@@ -55,7 +57,7 @@ def request_saved_reports():
     eel.set_saved_reports(content)
 
 @eel.expose
-def analyse_graph(name, is_saved):
+def analyse_graph(name, is_saved, analysis):
     if is_saved:
         saved_reports = per.get_saved_reports()
         report = next((x for x in saved_reports if x['name'] == name), None)
@@ -78,7 +80,12 @@ def analyse_graph(name, is_saved):
             eel.message('#graph-generated')
             # analyse the graph
             eel.message('#analysing-graph')
-            G.report = analyze(G)
+            if 'time' in analysis.keys():
+                G.report = analyse(G, time=analysis['time'])
+            else:
+                G.report = analyse(G, 
+                                split_size=analysis['split_size'], 
+                                num_splits=analysis['num_splits'])
             # enter STAGE 2 (show analysis results)
             eel.set_stage(2)
 

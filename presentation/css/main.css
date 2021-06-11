@@ -70,6 +70,9 @@ tbody tr:hover {
 
 }
 
+#split-camps {
+    display: None;
+}
 
 .table-scroll {
     height:150px;

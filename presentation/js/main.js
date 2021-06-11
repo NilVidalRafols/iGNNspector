@@ -1,6 +1,9 @@
 var graph = {
     name: "",
     is_saved: false,
+    time: 0.0,
+    split_size: 0,
+    num_splits: 0,
     report: {}
 };
 
@@ -45,6 +48,8 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip({
         placement : 'right'
     });
+    // The app starts in STAGE 0
+    set_stage(0);
     // this button triggers STAGE 0
     $('#browse-btn').click(function () {
         set_stage(0);
@@ -56,9 +61,28 @@ $(document).ready(function(){
         set_stage(1);
         var name = $('#selected-graph').text();
         if (name)
-            eel.analyse_graph(graph.name, graph.is_saved);
+            if ($('#time-camps').attr('display') != 'None') {
+                value = $('#time-camps').val();
+                eel.analyse_graph(graph.name, 
+                                graph.is_saved, 
+                                {time: $('#analysis-time').val()});
+            } else {
+                value = $('#split-camps').val();
+                eel.analyse_graph(graph.name, 
+                                graph.is_saved, 
+                                {   split_size: $('#split-size').val(),
+                                    num_splits: $('#num_splits').val()});
+            }
     });
-
+    // assign camps to show when clicking these buttons
+    $('#time-btn').click(function () {
+        $('#time-camps').show();
+        $('#split-camps').hide();
+    });
+    $('#split-btn').click(function () {
+        $('#time-camps').hide();
+        $('#split-camps').show();
+    });
     $('[data-toggle="popover"]').popover()
 
     eel.request_saved_reports();

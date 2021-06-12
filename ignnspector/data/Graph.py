@@ -205,8 +205,9 @@ class Graph:
 
     def subgraph(self, nodes=None, num_nodes=None):
         if num_nodes != None:
-            nodes = list(range(min(num_nodes, self.num_nodes)))
+            nodes = list(range(self.num_nodes))
             random.shuffle(nodes)
+            nodes = nodes[0:min(num_nodes, self.num_nodes)]
 
         # data = self.__data
         # if isinstance(data, nx.Graph) or isinstance(data, nx.DiGraph):

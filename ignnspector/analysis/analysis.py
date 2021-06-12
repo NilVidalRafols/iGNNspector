@@ -26,7 +26,7 @@ def analyse(graph, time=None, split_size=None, num_splits=None):
     report = init_report(graph, split_size, num_splits)
 
     nx = lambda g: g.nx_DiGraph() if g.directed else g.nx_Graph()
-    for  split, _ in zip(splits, range(num_splits)):
+    for split, _ in zip(splits, range(num_splits)):
         report['split_num_edges'].append(split.num_edges)
         nx(split)
         # run ignnspector metrics
@@ -95,7 +95,7 @@ def init_report(graph, split_size, num_splits):
         'num_nodes': graph.num_nodes,
         'num_edges': graph.num_edges,
         'split_size': split_size,
-        'spit_num_edges': [],
+        'split_num_edges': [],
         'num_splits': num_splits
     }
     for key in ignnspector_functions:
@@ -129,19 +129,35 @@ def analyse_with_time(graph, time):
 def get_best_model(graph):
     # collection of regression methods 
     # (the model which gives the best results will be used)
-    models = {"OLS":LinearRegression(), 
-            "R":Ridge(), 
-            "BR":BayesianRidge(),
-            "LL":LassoLars(alpha=.1),
-            "L":Lasso(alpha=0.1),
-            "EN":ElasticNet()}
+    models = [
+        LinearRegression(), 
+        Ridge(), 
+        BayesianRidge(),
+        LassoLars(alpha=.1),
+        Lasso(alpha=0.1),
+        ElasticNet()
+    ]
 
-    # train a linear regressor with 10 samples from 0% nodes to up to 10% nodes
+    # train a linear regressor with 10 samples from 1% nodes to up to 10% nodes
     one_100 = graph.num_nodes // 100
     num_splits = 3
     x = []
     y = []
-    for split_size in range(0, 10 * one_100, one_100):
+    # set an starting percentage to make sure the starting split has some edges, 
+    # if it had 0, np.log10 woud not work
+    start_percentage = one_100
+    split = graph.subgraph(num_nodes=one_100)
+    # if some edges apear, still ad some nodes as a save margin
+    save_margin = 5
+    while save_margin > 0:
+        start_percentage += one_100
+        split = graph.subgraph(num_nodes=start_percentage)
+        if split.num_edges > 0:
+            save_margin -= 1
+    # 10 samples starrting from start_percentage with a 1% node increment
+    final_percentage = min(graph.num_nodes, start_percentage + (10 * one_100))
+
+    for split_size in range(start_percentage, final_percentage, one_100):
         r = analyse(graph, split_size=split_size, num_splits=num_splits)
         # prepare data to train the regression model
         # input data x consist on samples of the pair (num nodes, num edges)
@@ -149,7 +165,10 @@ def get_best_model(graph):
         x.append((np.log10(split_size), np.log10(num_edges)))
         # autput data y consist on the base 10 logarithm of the sum of the 
         # execution time from all metrics analysed
-        all_times = [value for value in map(lambda d: d['time'], r.values())]
+        all_times = []
+        for d in r.values():
+            if isinstance(d, dict):
+                all_times.append(d['time'])
         total_time = sum(all_times)
         y.append(np.log10(total_time))
 
@@ -161,20 +180,20 @@ def get_best_model(graph):
         scores.append((model, score))
     # get the model with the best score from (model, score) pairs
     best_model = min(scores, key=lambda x: x[1])[0]
-
+    return best_model
 # perform a binary search over the number of nodes to determine the split_size 
 # needed to analyse the graph with aproximately the same duration that [time]
 def get_splits_with_time(graph, model, time):
     # divide time for 3, since 3 splits will be used to avarage analysis values
     time = time / 3
-    split_size, num_splits = search_split_size(model, time, 
+    split_size, num_splits = search_split_size(graph, model, time, 
                                                         0, 
-                                                        len(graph.num_nodes))
+                                                        graph.num_nodes)
     return split_size, num_splits
 
 def search_split_size(graph, model, time, left, right, 
                         num_splits=3, 
-                        range=30):
+                        time_range=30):
     if right >= left:
         # predict the execution time with the current split size
         split_size = left + (right - left) // 2
@@ -182,25 +201,27 @@ def search_split_size(graph, model, time, left, right,
         pred_time = 0.0
         for split, _ in zip(splits, range(num_splits)):
             x = [(np.log10(split.num_nodes), np.log10(split.num_edges))]
-            pred_time += model.predict(x)[0] / num_splits
+            prediction = list(map(lambda y_i: pow(10, y_i), model.predict(x)))
+            pred_time += prediction[0] / num_splits
 
         # if the predicted time falls inside the accepted range, 
         # return the split generator, the split size and the number of splits
-        if pred_time >= time - range and pred_time <= time + range:
+        if pred_time >= time - time_range / 2 \
+            and pred_time <= time + time_range / 2:
             return split_size, num_splits
 
-        elif pred_time < time - range:
-            return search_split_size(graph, graph, model, time, 
+        elif pred_time < time - time_range / 2:
+            return search_split_size(graph, model, time, 
                                     split_size + 1, 
                                     right, 
                                     num_splits, 
-                                    range)
+                                    time_range)
         else:
-            return search_split_size(graph, graph, model, time, 
+            return search_split_size(graph, model, time, 
                                     left, 
                                     split_size - 1, 
                                     num_splits, 
-                                    range)
+                                    time_range)
     else:
         return left, num_splits
 

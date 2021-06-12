@@ -10,10 +10,13 @@ import torch_geometric as pyg
 dataset = pyg.datasets.CitationFull(name='CiteSeer', root='/tmp')
 total_graph = Graph(dataset[0], single_representation=False)
 
-time = 5
+time = 120
 report = analyse_with_time(total_graph, time=time)
 
-all_times = [value for value in map(lambda d: d['time'], report.values())]
+all_times = []
+for d in report.values():
+    if isinstance(d, dict):
+        all_times.append(d['time'])
 real_time = sum(all_times)
 
 print('time:', time)

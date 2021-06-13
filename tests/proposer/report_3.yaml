@@ -123,7 +123,7 @@ layers:
   in_features: 12
   out_features: 12
   type: GCN2
-- activation: softmax
+- activation: log_softmax
   in_features: 12
   out_features: 5
   type: MLP

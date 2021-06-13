@@ -11,7 +11,7 @@ import csv
 from pathlib import Path
 
 from ignnspector.analysis.functions import *
-from ignnspector.data import Graph
+from ignnspector import Graph
 
 def analyse(graph, time=None, split_size=None, num_splits=None):
     if time != None:

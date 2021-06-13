@@ -11,7 +11,7 @@ layers:
   in_features: 10
   out_features: 9
   type: GAT
-- activation: softmax
+- activation: log_softmax
   in_features: 9
   out_features: 5
   type: MLP

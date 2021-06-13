@@ -1,9 +1,9 @@
-from ignnspector.proposers import Proposer
+from ignnspector.model.proposers import Proposer
 from ignnspector.analysis.reports import ModelReport
 
 import yaml
 
-class Studies(Proposer):
+class CustomStudies(Proposer):
     def __init__(self, report=None):
         super(Studies, self).__init__(report)
 

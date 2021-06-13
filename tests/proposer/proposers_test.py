@@ -1,10 +1,12 @@
 import sys
 sys.path.append(sys.path[0].replace('/tests/proposer', ''))
 
+import yaml
+
 from ignnspector.analysis.reports import GraphReport
-from ignnspector.data import Graph
+from ignnspector import Graph
 from ignnspector.analysis import Analyzer
-from ignnspector.proposers import *
+from ignnspector.model.proposers import *
 
 def test_Studies(features):
     with open('tests/graph_report.yaml', 'r') as f:

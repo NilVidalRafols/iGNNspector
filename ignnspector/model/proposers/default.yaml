@@ -8,7 +8,7 @@ layers:
   # last layer for node classification
   last_node_clas:
     - type: MLP
-      activation: softmax
+      activation: log_softmax
 
   # last layers for graph classification
   last_graph_clas:

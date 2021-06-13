@@ -7,7 +7,7 @@ sys.path.append(sys.path.append('d:\\UNI\\iGNNspector'))
 import pickle
 from torch_geometric.datasets import Planetoid
 
-from ignnspector.analysis import Graph
+from ignnspector import Graph
 
 
 dataset = Planetoid(name='CiteSeer', root=os.getcwd())

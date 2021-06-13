@@ -3,9 +3,9 @@
 # external imports
 
 # tool imports
-from ignnspector.data import Graph
+from ignnspector import Graph
 from ignnspector.analysis.reports import *
-from ignnspector.proposers import *
+from ignnspector.model.proposers import *
 
 class Analyzer:
     def __init__(self, time=None, split_size=None, num_splits=None):

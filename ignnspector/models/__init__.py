@@ -1,1 +1,0 @@
-from ignnspector.models.Model import Model

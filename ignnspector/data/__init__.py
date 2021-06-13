@@ -1,1 +1,0 @@
-from ignnspector.data.Graph import *

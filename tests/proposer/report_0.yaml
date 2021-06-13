@@ -1,0 +1,15 @@
+layers:
+- activation: relu
+  in_features: 12
+  out_features: 10
+  type: GAT
+- activation: relu
+  in_features: 10
+  out_features: 8
+  type: GAT
+- activation: softmax
+  in_features: 8
+  out_features: 5
+  type: MLP
+model_name: iGNNspector_GAT
+model_type: GAT

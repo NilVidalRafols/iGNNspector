@@ -1,4 +1,4 @@
-from ignnspector.analysis.proposers import Proposer
+from ignnspector.proposers import Proposer
 from ignnspector.analysis.reports import ModelReport
 
 import yaml
@@ -169,7 +169,7 @@ class Studies(Proposer):
         # required is not specified in the proposal, just add a default value.
         
         # Load the default contents for the model report
-        with open('ignnspector/analysis/proposers/default.yaml', 'r') as f:
+        with open('ignnspector/proposers/default.yaml', 'r') as f:
             default = yaml.safe_load(f)
 
         p = proposal

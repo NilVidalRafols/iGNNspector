@@ -6,7 +6,7 @@ from datetime import datetime
 from torch.functional import split
 
 import persistence as per
-from ignnspector.data import Graph
+from ignnspector import Graph
 from ignnspector.analysis import analyse
 
 #app settings needed during the execution of the app

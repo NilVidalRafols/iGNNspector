@@ -10,7 +10,7 @@ import torch_geometric as pyg
 dataset = pyg.datasets.CitationFull(name='CiteSeer', root='/tmp')
 total_graph = Graph(dataset[0], single_representation=False)
 
-report = analyze(total_graph, split_size=2000)
+report = analyze(total_graph, split_size=total_graph.num_nodes)
 
 with open('persistence/reports/CiteSeer.yaml', 'w') as f:
     yaml.dump(report, f)

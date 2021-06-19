@@ -1,41 +1,45 @@
-name: 'CiteSeer'
 attribute_assortativity_coefficient:
-  time: 0.0015635490417480469
-  value: 0.9322406384936537
+  time: 0.008925676345825195
+  value: 0.9377752578717435
 average_clustering:
-  time: 0.006874561309814453
-  value: 0.05030687361944328
+  time: 0.02590036392211914
+  value: 0.11678134183176847
 average_shortest_path_length:
-  time: 0.06877255439758301
-  value: 6.9613437290086555
+  time: 1.917839527130127
+  value: 7.419883997620464
 density:
-  time: 0.0003101825714111328
-  value: 0.0006120560280140071
+  time: 0.0007691383361816406
+  value: 0.0005966905309338257
 diameter:
-  time: 0.0678708553314209
-  value: 17.5
+  time: 1.8830609321594238
+  value: 23.0
 edge_connectivity:
-  time: 0.09353935718536377
+  time: 2.483370065689087
   value: 1.0
 edge_cut:
-  time: 0.0029747486114501953
-  value: 2662.0
+  time: 0.006647348403930664
+  value: 0.0
 false_avg_degree:
-  time: 0.00038111209869384766
-  value: 1.2235
+  time: 0.0008666515350341797
+  value: 2.523404255319149
+homophily_ratio:
+  time: 0.0042438507080078125
+  value: 0.9494097807757167
 node_connectivity:
-  time: 0.3814336061477661
+  time: 10.831985473632812
   value: 1.0
 num_edges: 10674
 num_nodes: 4230
-num_splits: 2
+num_splits: 1
 radius:
-  time: 0.06783092021942139
-  value: 9.0
+  time: 1.8829095363616943
+  value: 12.0
 real_avg_degree:
-  time: 0.00047469139099121094
-  value: 2.5545
-split_size: 2000
+  time: 0.001148223876953125
+  value: 2.523404255319149
+split_num_edges:
+- 5337
+split_size: 4230
 torch_geometric.utils.homophily:
-  time: 9.5367431640625e-06
+  time: 9.298324584960938e-06
   value: 0.0

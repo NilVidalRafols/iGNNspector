@@ -67,7 +67,7 @@ def analyse(graph, time=None, split_size=None, num_splits=None):
             try:
                 value = function(split.PyG().edge_index, split.PyG().y)
             except Exception:
-                value = 0
+                value = 0.0
             duration = t.time() - ini_time
             report[function.__name__]['value'] += value / num_splits
             report[function.__name__]['time'] += duration / num_splits

@@ -63,5 +63,6 @@ nx_functions = [
 ]
 pyg_functions = [
     # Parameters: edge_index, y
-    pyg.utils.homophily
+    pyg.utils.homophily,
+    pyg.utils.homophily_ratio
 ]

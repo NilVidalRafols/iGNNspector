@@ -31,6 +31,7 @@
                     <div class="col">
                         <button id="browse-btn" class="btn btn-primary ignn-btn" style="display: inline;">Browse</button>
                         <button id="analyse-btn" class="btn btn-primary ignn-btn " style="display: inline;" disabled>Analyse</button>
+                        <button id="save-analysis-btn" class="btn btn-primary ignn-btn " style="display: inline;" disabled>Save analysis</button>
                     </div>
                 </div>
                 <!--EXPLORER-->
@@ -139,27 +140,68 @@
             </div>
             <div class="col-xl" id="proposals">
                 <span class="row p-2">
-                    <h4>Proposals</h4><i class="fa fa-info-circle ml-2" aria-hidden="true"></i>
+                    <h4>Model proposals and builder</h4><i class="fa fa-info-circle ml-2" aria-hidden="true"></i>
                 </span>
+                <div class="row p-2">
+                    <div class="col">
+                        <button id="propose-btn" class="btn btn-primary ignn-btn" style="display: inline;" disabled>Propose models</button>
+                        <button id="save-proposals-btn" class="btn btn-primary ignn-btn " style="display: inline;" disabled>Save proposals</button>
+                        <button id="build-btn" class="btn btn-primary ignn-btn " style="display: inline;" disabled>Build model</button>
+                    </div>
+                </div>
                 <!--PROPOSALS SETTINGS-->
                 <div class="row" id="stage-2">
-                    <div class="bubble p-3 m-2" id="proposals-settings">
-                        <p>What are your preferences?</p>
-                        <div class="form-check-inline" >
-                            <label class="form-check-label" for="check1">
-                              <input type="checkbox" class="form-check-input" id="check1" name="memory" value="memory">Memory efficiency
-                            </label>
+                    <div class="col">
+                        <div class="bubble p-3 m-2" id="proposals-settings">
+                            <p>What are your preferences?</p>
+                            <div class="form-check-inline" >
+                                <label class="form-check-label" for="check1">
+                                  <input type="checkbox" class="form-check-input" id="check1" name="memory" value="memory">Memory efficiency
+                                </label>
+                            </div>
+                            <div class="form-check-inline" >
+                                <label class="form-check-label" for="check2">
+                                    <input type="checkbox" class="form-check-input" id="check2" name="time" value="time">Time efficiency
+                                </label>
+                            </div>        
+                            <div class="form-check-inline" >
+                                <label class="form-check-label" for="check3">
+                                    <input type="checkbox" class="form-check-input" id="check3" name="precision" value="precision">Precision
+                                </label>
+                            </div>
                         </div>
-                        <div class="form-check-inline" >
-                            <label class="form-check-label" for="check2">
-                                <input type="checkbox" class="form-check-input" id="check2" name="time" value="time">Time efficiency
-                            </label>
-                        </div>        
-                        <div class="form-check-inline" >
-                            <label class="form-check-label" for="check3">
-                                <input type="checkbox" class="form-check-input" id="check3" name="precision" value="precision">Precision
-                            </label>
-                        </div>
+                    </div>
+                </div>
+                <div class="row" id="stage-">
+                    <div class="col">
+                        <div class="bubble p-3 m-2 table-scroll" id="proposals">
+                            <table style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Model type</th>
+                                        <th>Num. layers</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr value="1">
+                                        <td>GCN</td>
+                                        <td>2</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr  value="2">
+                                        <td>GAT</td>
+                                        <td>3</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr  value="3">
+                                        <td>GIN</td>
+                                        <td>3</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>    
                     </div>
                 </div>
             </div>

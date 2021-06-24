@@ -1,7 +1,7 @@
-table_path: experiments/analysis/CiteSeer/times-values/times_.csv
+table_path: experiments/analysis/pyg/times_all_Squirrel.csv
 scale: normal
 # annotate: true
 
-output_path: experiments/analysis/plots/time-bars/
+output_path: experiments/plots/time-bars/2/
 column: num_nodes
-title: CiteSeer
+title: Squirrel

@@ -77,6 +77,7 @@ def analyse(graph, time=None, split_size=None, num_splits=None):
 def get_splits(graph, split_size, num_splits):
     if split_size == None and num_splits == None:
         num_splits = 1
+        split_size = graph.num_nodes
         splits = [graph]
     elif split_size == None:
         split_size = graph.num_nodes // num_splits
@@ -154,7 +155,7 @@ def get_best_model(graph):
         split = graph.subgraph(num_nodes=start_percentage)
         if split.num_edges > 0:
             save_margin -= 1
-    # 10 samples starrting from start_percentage with a 1% node increment
+    # 10 samples starting from start_percentage with a 1% node increment
     final_percentage = min(graph.num_nodes, start_percentage + (10 * one_100))
 
     for split_size in range(start_percentage, final_percentage, one_100):

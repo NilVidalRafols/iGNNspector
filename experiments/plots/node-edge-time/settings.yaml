@@ -13,7 +13,7 @@ annotate: true
 # title: 
 
 plots:
-  - output_path: experiments/plots/node-edge-time/3/
+  - output_path: experiments/plots/node-edge-time/4/
     column: total
   # - output_path: experiments/analysis/plots/node-edge-time/2/
   #   column: node_connectivity

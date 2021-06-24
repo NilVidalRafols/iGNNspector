@@ -1,7 +1,7 @@
 import torch
 import torch_geometric
 
-
+# Fix modules with https://discuss.pytorch.org/t/nn-with-configurable-number-of-layers/5202
 class GNN(torch.nn.Module):
     def __init__(self, components):
         super(GNN, self).__init__()

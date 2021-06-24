@@ -129,7 +129,7 @@ class CustomStudies(Proposer):
 
         return proposals
 
-    def select_best_options(self, proposals, features):
+    def select_proposals(self, features, proposals):
         result = []
         if len(features) == 0:
             # Returns the final list of proposals without duplicates
@@ -142,7 +142,7 @@ class CustomStudies(Proposer):
         proposals = sorted(proposals, key=lambda x: len(x), reverse=True)
         proposals = proposals[:num_proposals]
         for group in proposals:
-            result += self.select_best_options(group, features)
+            result += self.select_proposals(features, group)
         return result
 
     # returns a list with as many lists as the number of distinct elements

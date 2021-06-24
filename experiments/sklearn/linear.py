@@ -66,14 +66,14 @@ def save_results(model, table, path):
     pred_times = list(map(lambda y_i: pow(10, y_i), y))
     results += list(zip(nodes, edges, times, pred_times))
 
-    out_path = 'experiments/sklearn/pred_' + path.stem + '.csv'
+    out_path = 'experiments/sklearn/lr/pred_' + path.stem + '.csv'
     with open(out_path, 'w', newline='') as f:
         w = csv.writer(f)
         w.writerows(results)
 
 if __name__ == '__main__':
     column = 'total'
-    paths = list(Path('experiments/analysis/pyg').glob('times_all_*'))
+    paths = list(Path('experiments/analysis/pyg').glob('times_all_WikiCS.csv'))
 
     tables = get_data(paths, column)
     # tables = tables[:-1]

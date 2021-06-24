@@ -47,24 +47,25 @@ def generate_plot(tables, plot, settings):
     plt.scatter(x,y,s=15,c=z,cmap='rainbow')
     # sns.jointplot(x=x, y=y, hue=z, kind='reg')
 
-    plt.xticks(fontsize=8)
-    plt.yticks(fontsize=8)
+    plt.xticks(fontsize=10)
+    plt.yticks(fontsize=10)
 
     # plt.yticks(np.arange(min(y), max(y)+1, step=100))
-    plt.xlabel('# nodes')
-    plt.ylabel('# edges')
-    plt.suptitle('node-edge-time correlation', y=0.98, fontsize=10, fontweight='bold')
+    plt.xlabel('number of nodes', fontsize=12)
+    plt.ylabel('number of edges', fontsize=12)
+    # plt.suptitle('Node-edge-time correlation', y=0.98, fontsize=10, fontweight='bold')
     title = plot['column']
-    plt.title(title, fontsize=9)
+    plt.title('Node-edge-time correlation', fontweight='bold')#title, fontsize=9)
     # plt.legend(fontsize=8, loc='best', markerscale=2.0)
 
     cbar = plt.colorbar()
     # t = 5*round((len(x)//10)/5)
     # cbar.set_ticks(MultipleLocator(t))
-    cbar.ax.tick_params(labelsize=8)
-    cbar.ax.set_title('time (s)', fontsize=8)
+    cbar.ax.tick_params(labelsize=10)
+    cbar.ax.set_title('time (s)', fontsize=12)
 
     plt.grid()
+    plt.tight_layout()
 
     path_out = plot['output_path'] + plot['column']
     if 'title' in settings:

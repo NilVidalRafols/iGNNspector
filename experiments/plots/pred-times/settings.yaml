@@ -1,4 +1,4 @@
-table_paths: ['experiments/sklearn/non-linear/1', 'pred_times_all_*.csv']
+table_paths: ['experiments/sklearn/lr', 'pred_times_all_*.csv']
   # # - experiments/analysis/PubMed/time_table_PubMed_2.csv
   # # - experiments/analysis/CiteSeer/time_table_CiteSeer_2.csv
   # # - experiments/analysis/ogbn-arxiv/time_table_ogbn-arxiv.csv
@@ -8,6 +8,6 @@ table_paths: ['experiments/sklearn/non-linear/1', 'pred_times_all_*.csv']
 scale: normal
 annotate: true
 
-
-output_path: experiments/plots/pred-times/3/
+model: Linear Regression
+output_path: experiments/plots/pred-times/4/lr/
 column: [num_nodes]

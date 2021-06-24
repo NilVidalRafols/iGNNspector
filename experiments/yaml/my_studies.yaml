@@ -1,5 +1,5 @@
 computational_cost:
-    small: &small
+    '== small': &small
         homophily:
             'all':
                 -   model_type: GCN
@@ -12,9 +12,9 @@ computational_cost:
                 -   model_type: CE-GCN
                     num_layers: 3
 
-    medium: *small
+    '== medium': *small
 
-    big:
+    '== big':
         homophily:
             '< 0.6':
                 -   model_type: GCN
@@ -53,3 +53,45 @@ computational_cost:
                     num_layers: 16
                 -   model_type: H2GCN
                     num_layers: 16
+
+
+homophily:
+    '> 0.5':
+        -   model_type: GCN
+            num_layers: 2
+        -   model_type: GAT
+            num_layers: 3
+    '<= 0.5':
+        -   model_type: Geom-GCN
+            num_layers: 4
+        -   model_type: H2GCN
+            num_layers: 4
+
+task:
+    '== node_classification':
+        -   model_type: GCN
+            num_layers: 2
+        -   model_type: GAT
+            num_layers: 3
+
+    '== node_feature_prediction':
+        -   model_type: GCN2
+            num_layers: 16
+
+memory_efficiency:
+    '== low':
+        task:
+            '== node_classification': &node_classification
+                -   model_type: GCN
+                    num_layers: 2
+                -   model_type: GAT
+                    num_layers: 3
+
+            '== node_feature_prediction':
+                -   model_type: GCN2
+                    num_layers: 16
+    '== high':
+        task:
+            '== node_classification': *node_classification
+
+            '== node_feature_prediction': *node_classification

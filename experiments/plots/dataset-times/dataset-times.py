@@ -43,14 +43,16 @@ def generate_plot(tables, paths, plot, settings):
         plt.semilogy()
 
 
-    plt.xticks(fontsize=8)
-    plt.yticks(fontsize=8)
+    plt.xticks(fontsize=10)
+    plt.yticks(fontsize=10)
 
-    plt.xlabel(plot['columns'][0])
-    plt.ylabel(plot['columns'][1])
-    names = list(map(lambda x: x.stem, paths))
-    plt.legend(labels=names)
+    plt.title('Correlation between number of edges and execution time', fontweight='bold')
+    plt.xlabel('number of edges', fontsize=12)#plot['columns'][0])
+    plt.ylabel('time (s)', fontsize=12)#plot['columns'][1])
+    names = list(map(lambda x: x.stem[10:], paths)) # cut the names to only show the dataset names
+    plt.legend(labels=names, loc='upper left', ncol = 2, fontsize=9)
     plt.grid()
+    plt.tight_layout()
 
     path_out = plot['output_path']
     path_out += plot['columns'][1] + '-' + plot['columns'][0] + '.png'

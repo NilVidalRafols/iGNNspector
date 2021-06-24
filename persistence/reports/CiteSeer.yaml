@@ -1,4 +1,5 @@
 name: 'CiteSeer'
+task: node_classification
 attribute_assortativity_coefficient:
   time: 0.008925676345825195
   value: 0.9377752578717435

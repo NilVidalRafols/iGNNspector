@@ -36,23 +36,25 @@ def generate_plot(table, settings):
                 color=colors[i])
         previous_y = [py_i + y_i for py_i,y_i in zip(previous_y,y)]
 
-    plt.xticks(fontsize=8, rotation=45)
+    plt.xticks(fontsize=10, rotation=90)
+    plt.yticks(fontsize=10)
     # plt.xticks(range(0, x[-1], x[-1]//10))
     # # plt.yticks(np.arange(min(y), max(y)+1, step=100))
-    # plt.xlabel('# nodes')
-    # plt.ylabel('# edges')
+    plt.xlabel('number of nodes', fontsize=12)
+    plt.ylabel('time (s)', fontsize=12)
     # plt.suptitle('node-edge-time correlation', y=0.98, fontsize=10, fontweight='bold')
-    # title = plot['column']
-    # plt.title(title, fontsize=9)
+    plt.suptitle('Stacked function execution times', fontweight='bold')#plot['column']
+    plt.title(settings['title'], fontsize=12)
     plt.legend(labels=functions, 
-               fontsize=8, 
+               fontsize=9, 
                loc='best', 
                markerscale=2.0,
                )
 
     # plt.grid()
+    plt.tight_layout()
 
-    path_out = settings['output_path'] + settings['column']
+    path_out = settings['output_path'] + 'time-bars_' + settings['column']
     if 'title' in settings:
         path_out += '_' + settings['title']
     path_out += '.png'

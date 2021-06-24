@@ -3,14 +3,14 @@ sys_path = '/tests/analysis'
 sys.path.append(sys.path[0].replace(sys_path, ''))
 import yaml
 
-from ignnspector.data import Graph
+from ignnspector import Graph
 from ignnspector.analysis import analyse_with_time
 import torch_geometric as pyg
 
-dataset = pyg.datasets.CitationFull(name='CiteSeer', root='/tmp')
+dataset = pyg.datasets.CitationFull(name='Cora', root='/tmp')
 total_graph = Graph(dataset[0], single_representation=False)
 
-time = 120
+time = 10
 report = analyse_with_time(total_graph, time=time)
 
 all_times = []

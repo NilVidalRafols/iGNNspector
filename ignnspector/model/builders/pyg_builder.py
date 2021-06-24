@@ -37,11 +37,8 @@ def get_GCN2Conv(layer):
     # since the GCN2Conv output has the same length than the input,
     # add a linear transformation to change the output length if needed
     if hidden_channels != out_features:
-        linear = Linear(hidden_channels, out_features)
-        def GCN2ConvLinear(x, x_0, edge_index):
-            x = layer_conv(x, x_0, edge_index)
-            return linear(x)
-        return GCN2ConvLinear
+        return Sequential(  layer_conv, 
+                            Linear(hidden_channels, out_features))
     else:
         return layer_conv
 

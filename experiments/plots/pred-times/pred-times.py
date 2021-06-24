@@ -44,13 +44,14 @@ def generate_plot(tables, path, settings):
         plt.semilogy()
 
 
-    plt.xticks(fontsize=8)
-    plt.yticks(fontsize=8)
+    plt.xticks(fontsize=10)
+    plt.yticks(fontsize=10)
 
-    plt.xlabel(settings['column'][0])
-    plt.ylabel('time (s)')
-    plt.title(path.stem)
-    plt.legend(labels=['real_tame', 'predicted_time'])
+    plt.xlabel('number of nodes', fontsize=12)
+    plt.ylabel('time (s)', fontsize=12)
+    plt.suptitle(settings['model'] + ' time prediction vs. real time', fontweight='bold')#plot['column']
+    plt.title(path.stem[15:], fontsize=12)
+    plt.legend(labels=['real tame', 'predicted time'], fontsize=10)
     plt.grid()
     
     path_out = settings['output_path']

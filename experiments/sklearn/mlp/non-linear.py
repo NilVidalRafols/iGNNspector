@@ -74,7 +74,7 @@ def save_results(model, table, path):
     pred_times = list(map(lambda y_i: pow(10, y_i), y))
     results += list(zip(nodes, edges, times, pred_times))
 
-    out_path = 'experiments/sklearn/non-linear/1/pred_' + path.stem + '.csv'
+    out_path = 'experiments/sklearn/non-linear/2/pred_' + path.stem + '.csv'
     with open(out_path, 'w', newline='') as f:
         w = csv.writer(f)
         w.writerows(results)

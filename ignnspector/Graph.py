@@ -12,9 +12,6 @@ import torch_geometric as pyg
 import random
 import pickle
 
-from ignnspector.analysis.reports import GraphReport
-
-
 class Graph:
     def __init__(self, data=None, single_representation=False):
         if isinstance(data, Path):
@@ -63,6 +60,7 @@ class Graph:
             self.num_edges = len(data[0]['edge_index'][0])
             edge_index = torch.LongTensor(data[0]['edge_index'])
             self.directed = not pyg.utils.is_undirected(edge_index)
+
         return data
 
     def nx_Graph(self):
@@ -95,7 +93,6 @@ class Graph:
                     for i, feat_dict in G.nodes(data=True):
                         feat_dict.update({'x': node_feat[i]})
                 
-
             self.__nx_Graph = G
             if self.single_representation:
                 self.__nx_DiGraph = None
@@ -190,15 +187,10 @@ class Graph:
         return self.__OGB
 
 
-    def to_splits(self, num_nodes=None, mode='random'):
+    def to_splits(self, num_nodes):
         nodes = list(range(self.num_nodes))
-        if mode == 'random':
-            random.shuffle(nodes)
-        elif mode != 'ordered':
-            return None
         
         for i in range(0, self.num_nodes, num_nodes):
-            
             split_nodes = nodes[i:min(i + num_nodes, self.num_nodes)]
             split = self.subgraph(split_nodes)
             yield split
@@ -208,27 +200,10 @@ class Graph:
             nodes = list(range(self.num_nodes))
             random.shuffle(nodes)
             nodes = nodes[0:min(num_nodes, self.num_nodes)]
-
-        # data = self.__data
-        # if isinstance(data, nx.Graph) or isinstance(data, nx.DiGraph):
-        #     G = data.subgraph(nodes).copy()
-        # elif isinstance(data, pyg.data.Data):
-        #     x = data.x[nodes]
-        #     y = data.y[nodes]
-        #     edge_index, _ = self.subgraph(nodes)
-        #     G = pyg.data.Data(x=x, edge_index=edge_index, y=y)
-        # elif isinstance(data, tuple):
-        #     tmp_G = self.PyG()
-        #     nodes = torch.LongTensor(nodes)
-        #     x = tmp_G.x[nodes]
-        #     y = tmp_G.y[nodes]
-        #     edge_index = torch.LongTensor(data[0]['edge_index'])
-        #     subgraph = pyg.utils.subgraph
-        #     edge_index, _ = subgraph(subset=nodes, edge_index=edge_index, relabel_nodes=True)
-        #     G = pyg.data.Data(x=x, edge_index=edge_index, y=y)
         
         if self.directed:
             G = self.nx_DiGraph().subgraph(nodes).copy()
         else:
             G = self.nx_Graph().subgraph(nodes).copy()
+            
         return Graph(G)

@@ -1,11 +1,10 @@
-import sys
-sys.path.append(sys.path[0].replace('/tests', ''))
+# import sys
+# sys.path.append(sys.path[0].replace('/tests', ''))
 
-from ignnspector.data import Graph
+from ignnspector import Graph
 
-import pytest
 import networkx as nx
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 import torch_geometric as pyg
 import torch
 import ogb.nodeproppred as ogbn
@@ -89,8 +88,6 @@ def test_subbgraph():
     print(s.PyG().edge_index)
     print(s.PyG().x)
 
-
-
 def test_to_splits():
     g = Graph(nx_graph())
     splits = list(g.to_splits(num_nodes=2))
@@ -99,7 +96,10 @@ def test_to_splits():
         print(split.nx_Graph().edges)
         print(split.nx_Graph().nodes(data=True))
 
+def test_graph_from_path():
+    pass
 
-# test_Graph_types()
+test_Graph_types()
 # test_subbgraph()
-test_to_splits()
+# test_to_splits()
+test_graph_from_path()

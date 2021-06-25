@@ -1,6 +1,6 @@
 from ignnspector.analysis.analysis import analyse
-import sys
-sys.path.append(sys.path[0].replace('/tests/builder', ''))
+# import sys
+# sys.path.append(sys.path[0].replace('/tests/builder', ''))
 
 import yaml
 import torch

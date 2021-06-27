@@ -1,14 +1,17 @@
 
 activation: relu
+dropout: 0.5
 layers:
   # inside layer
   default_layer:
     - activation: relu
+      dropout: 0.5
 
   # last layer for node classification
   last_node_clas:
     - type: MLP
       activation: log_softmax
+      dropout: 0.5
 
   # last layers for graph classification
   last_graph_clas:

@@ -13,7 +13,7 @@ def get_GCNConv(layer):
 def get_GATConv(layer):
     in_features = layer['in_features']
     out_features = layer['out_features']
-    return conv.GATConv(in_features, out_features, dropout=0.5)
+    return conv.GATConv(in_features, out_features, concat=False, dropout=0.5)
 
 def get_GINConv(layer):
     in_features = layer['in_features']
@@ -25,7 +25,7 @@ def get_GINConv(layer):
                                 Linear(mid_features, out_features), 
                                 ReLU())
 
-    return conv.GATConv(neural_network)
+    return conv.GINConv(neural_network)
 
 def get_GCN2Conv(layer):
     hidden_channels = layer['in_features']
@@ -33,12 +33,13 @@ def get_GCN2Conv(layer):
     alpha = 0.1
     theta = 0.5
 
-    layer_conv = conv.GCN2Conv(hidden_channels, alpha, theta, layer + 1,)
+    layer_conv = conv.GCN2Conv(hidden_channels, alpha)
     # since the GCN2Conv output has the same length than the input,
     # add a linear transformation to change the output length if needed
     if hidden_channels != out_features:
-        return Sequential(  layer_conv, 
-                            Linear(hidden_channels, out_features))
+        return Linear(hidden_channels, out_features)
+        # return Sequential(  layer_conv, 
+        #                     Linear(hidden_channels, out_features))
     else:
         return layer_conv
 
@@ -52,7 +53,7 @@ layer_map = {
     'GCN': get_GCNConv,
     'GAT': get_GATConv,
     'GIN': get_GINConv,
-    'GCN2': get_GCN2Conv,
+    # 'GCN2': get_GCN2Conv,
     'MLP': get_MLP
 }
 
@@ -62,6 +63,14 @@ activation_map = {
 }
 
 def pyg_builder(report):
+    # If there is some activation or layer type that is not currently suported 
+    # by pyg_builder return None
+    for l in report['layers']:
+        if not l['type'] in layer_map.keys():
+            return None
+        if not l['activation'] in activation_map.keys():
+            return None
+            
     layers = []
     dropouts = []
     activations = []
@@ -72,7 +81,7 @@ def pyg_builder(report):
         layers.append(layer)
         # dropouts
         if 'dropout' in l.keys() and l['dropout'] > 0.0:
-            dropouts.append(F.dropout)
+            dropouts.append((F.dropout, l['dropout']))
         else:
             dropouts.append(lambda x: x)
         # activations

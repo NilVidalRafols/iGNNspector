@@ -1,4 +1,5 @@
 import torch
+from torch.nn.modules.linear import Linear
 import torch_geometric
 
 # Fix modules with https://discuss.pytorch.org/t/nn-with-configurable-number-of-layers/5202
@@ -17,9 +18,15 @@ class GNN(torch.nn.Module):
         for name, layer in self.named_children():
             i = self.names.index(name)
             component = self.components[i]
-            x = component['dropout'](x)
-            x = layer(x, edge_index)
-            x = component['activation'](x)
+            dropout, p = component['dropout']
+            activation = component['activation']
+            
+            x = dropout(x, p)
+            if isinstance(layer, Linear):
+                x = layer(x)
+            else:
+                x = layer(x, edge_index)
+            x = activation(x)
 
         return x
 

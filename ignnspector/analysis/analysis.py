@@ -127,12 +127,13 @@ def biggest_connected_component(graph):
     return biggest_connected_component
 
 # time in seconds
-def analyse_with_time(graph, time, num_splits=3):
+def analyse_with_time(graph, time, num_splits=1):
     # divide the time between the number of splits that will be analysed,
     # since they will take approximately the same time
-    time //= num_splits
+    time /= num_splits
     model = get_best_model_2(graph, num_splits)
-    split_size = model.predict(np.log10(time))
+    prediction = model.predict(np.log10(time).reshape(-1, 1))
+    split_size = int(pow(10, prediction))
     # split_size, num_splits = get_splits_with_time(graph, model, time)
     report = analyse(graph, split_size=split_size, num_splits=num_splits)
 
@@ -159,7 +160,7 @@ def get_best_model_2(graph, num_splits):
     start_percentage = one_100
     split = graph.subgraph(num_nodes=one_100)
     # if some edges apear, still ad some nodes as a save margin
-    save_margin = 5
+    save_margin = 3
     while save_margin > 0:
         start_percentage += one_100
         split = graph.subgraph(num_nodes=start_percentage)
@@ -178,10 +179,15 @@ def get_best_model_2(graph, num_splits):
             if isinstance(d, dict):
                 all_times.append(d['time'])
         total_time = sum(all_times)
-        y.append(np.log10(total_time))
+        x.append(total_time)
 
         # output data y consist on the base 10 logarithm of sample split_sizes
-        x.append((np.log10(split_size)))
+        y.append(split_size)
+
+    # convert data to numpy array to train the model and reshape it since it 
+    # has a single feature per sample
+    x = np.array(np.log10(x)).reshape(-1, 1)
+    y = np.array(np.log10(y))
 
     # train models
     scores = []
@@ -193,61 +199,61 @@ def get_best_model_2(graph, num_splits):
     best_model = min(scores, key=lambda x: x[1])[0]
     return best_model
 
-def get_best_model(graph):
-    # collection of regression methods 
-    # (the model which gives the best results will be used)
-    models = [
-        LinearRegression(), 
-        Ridge(), 
-        BayesianRidge(),
-        LassoLars(alpha=.1),
-        Lasso(alpha=0.1),
-        ElasticNet()
-    ]
+# def get_best_model(graph):
+#     # collection of regression methods 
+#     # (the model which gives the best results will be used)
+#     models = [
+#         LinearRegression(), 
+#         Ridge(), 
+#         BayesianRidge(),
+#         LassoLars(alpha=.1),
+#         Lasso(alpha=0.1),
+#         ElasticNet()
+#     ]
 
-    # train a linear regressor with 10 samples from 1% nodes to up to 10% nodes
-    one_100 = graph.num_nodes // 100
-    num_splits = 3
-    x = []
-    y = []
-    # set an starting percentage to make sure the starting split has some edges, 
-    # if it had 0, np.log10 woud not work
-    start_percentage = one_100
-    split = graph.subgraph(num_nodes=one_100)
-    # if some edges apear, still ad some nodes as a save margin
-    save_margin = 5
-    while save_margin > 0:
-        start_percentage += one_100
-        split = graph.subgraph(num_nodes=start_percentage)
-        if split.num_edges > 0:
-            save_margin -= 1
-    # 10 samples starting from start_percentage with a 1% node increment
-    final_percentage = min(graph.num_nodes, start_percentage + (10 * one_100))
+#     # train a linear regressor with 10 samples from 1% nodes to up to 10% nodes
+#     one_100 = graph.num_nodes // 100
+#     num_splits = 3
+#     x = []
+#     y = []
+#     # set an starting percentage to make sure the starting split has some edges, 
+#     # if it had 0, np.log10 woud not work
+#     start_percentage = one_100
+#     split = graph.subgraph(num_nodes=one_100)
+#     # if some edges apear, still ad some nodes as a save margin
+#     save_margin = 5
+#     while save_margin > 0:
+#         start_percentage += one_100
+#         split = graph.subgraph(num_nodes=start_percentage)
+#         if split.num_edges > 0:
+#             save_margin -= 1
+#     # 10 samples starting from start_percentage with a 1% node increment
+#     final_percentage = min(graph.num_nodes, start_percentage + (10 * one_100))
 
-    for split_size in range(start_percentage, final_percentage, one_100):
-        r = analyse(graph, split_size=split_size, num_splits=num_splits)
-        # prepare data to train the regression model
-        # input data x consist on samples of the pair (num nodes, num edges)
-        num_edges = sum(r['split_num_edges']) // len(r['split_num_edges'])
-        x.append((np.log10(split_size), np.log10(num_edges)))
-        # autput data y consist on the base 10 logarithm of the sum of the 
-        # execution time from all metrics analysed
-        all_times = []
-        for d in r.values():
-            if isinstance(d, dict):
-                all_times.append(d['time'])
-        total_time = sum(all_times)
-        y.append(np.log10(total_time))
+#     for split_size in range(start_percentage, final_percentage, one_100):
+#         r = analyse(graph, split_size=split_size, num_splits=num_splits)
+#         # prepare data to train the regression model
+#         # input data x consist on samples of the pair (num nodes, num edges)
+#         num_edges = sum(r['split_num_edges']) // len(r['split_num_edges'])
+#         x.append((np.log10(split_size), np.log10(num_edges)))
+#         # autput data y consist on the base 10 logarithm of the sum of the 
+#         # execution time from all metrics analysed
+#         all_times = []
+#         for d in r.values():
+#             if isinstance(d, dict):
+#                 all_times.append(d['time'])
+#         total_time = sum(all_times)
+#         y.append(np.log10(total_time))
 
-    # train models
-    scores = []
-    for model in models:
-        model.fit(x, y)
-        score = mean_squared_error(y, model.predict(x))
-        scores.append((model, score))
-    # get the model with the best score from (model, score) pairs
-    best_model = min(scores, key=lambda x: x[1])[0]
-    return best_model
+#     # train models
+#     scores = []
+#     for model in models:
+#         model.fit(x, y)
+#         score = mean_squared_error(y, model.predict(x))
+#         scores.append((model, score))
+#     # get the model with the best score from (model, score) pairs
+#     best_model = min(scores, key=lambda x: x[1])[0]
+#     return best_model
 # perform a binary search over the number of nodes to determine the split_size 
 # needed to analyse the graph with aproximately the same duration that [time]
 def get_splits_with_time(graph, model, time):
@@ -291,25 +297,3 @@ def search_split_size(graph, model, time, left, right,
                                     time_range)
     else:
         return left, num_splits
-
-
-# metrics_map = [
-#     "num_nodes",
-#     "num_edges",
-#     "num_features",
-#     "num_classes",
-#     "prediction_type", # What will the model predict (graph/node pred, ...)
-#     "learning_method", # inductive/transductive learning
-#     "avg_degree",
-#     "diameter",
-#     "avg_path_length",
-#     "radius",
-#     "node_connectivity",
-#     "edge_connectivity",
-#     "avg_clustering_coef",
-#     "transitivity",
-#     "density",
-#     "homophily",
-#     "edge_cut"
-#     '''...'''
-# ]

@@ -3,22 +3,27 @@ time_efficiency:
         homophily:
             'all':
                 -   model_type: GCN
-                    num_layers: 2
+                    num_layers: 3
                 -   model_type: GAT
                     num_layers: 3
-        modularity: &modularity
+        modularity:
             '< 0.5':
                 -   model_type: GAT
-                    num_layers: 4
+                    num_layers: 3
             '>= 0.5':
                 -   model_type: CE-GCN
                     num_layers: 3
+
+    '== medium': *high
 
     '== low':
         homophily:
             '< 0.6':
                 -   model_type: GCN
-                    num_layers: 4
+                    num_layers: 3
+                -   model_type: GIN
+                    num_layers: 3
+
             '>= 0.6':
                 -   model_type: Geom-GCN
                     num_layers: 5
@@ -26,27 +31,20 @@ time_efficiency:
                     num_layers: 16
                 -   model_type: H2GCN
                     num_layers: 16
-        modularity: *modularity
-            '< 0.5':
+        task:
+            '== node_classification':
                 -   model_type: GAT
-                    num_layers: 4
-            '>= 0.5':
-                -   model_type: CE-GCN
                     num_layers: 3
-        prediction_type:
-            'node_classification':
-                -   model_type: GAT
-                    num_layers: 5
                 -   model_type: GCN2
                     num_layers: 16
                 -   model_type: H2GCN
                     num_layers: 16
-            'graph_classification':
+            '== graph_classification':
                 -   model_type: GAT
-                    num_layers: 4
+                    num_layers: 3
                 -   model_type: GCN
-                    num_layers: 4
-            'node_prediction':
+                    num_layers: 2
+            '== node_prediction':
                 -   model_type: Geom-GCN
                     num_layers: 5
                 -   model_type: GCN2

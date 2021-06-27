@@ -41,3 +41,7 @@ split_num_edges:
 - 5337
 split_size: 4230
 total_time: 27.41368532180786
+in_features:  16
+out_features: 4
+task: node_classification
+time_efficiency: low

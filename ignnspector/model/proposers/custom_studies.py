@@ -1,4 +1,3 @@
-from torch.nn.modules import activation
 import yaml
 
 path = 'ignnspector/model/proposers/default_proposal_tree.yaml'

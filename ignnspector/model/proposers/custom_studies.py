@@ -156,10 +156,13 @@ def get_layers(p, analysis, default):
     layers = []
     
     # hidden_channels have a length equal to 20% of the input channels 
-    # plus the output_channels
-    hidden_channels = int(analysis['in_features'] * 0.2) + analysis['out_features']
+    # plus the output_channels if they are smaller than 32, else 32
+    hidden_channels = int(analysis['in_features'] * 0.2) 
+    hidden_channels += analysis['out_features']
+    # hidden_channels = min(32, hidden_channels)
     # add as many layers as specified in 'num_layers'
     for i in range(num_layers):
+        # add the first layer
         if i == 0:
             layers.append({
                 'type': p['model_type'],
@@ -168,6 +171,7 @@ def get_layers(p, analysis, default):
                 'activation': default['activation'],
                 'dropout': default['dropout']
             })
+        # add the last layer
         elif i ==  num_layers - 1:
             if analysis['task'] == 'node_classification':
                 layer_type = default['layers']['last_node_clas'][0]['type']
@@ -179,6 +183,7 @@ def get_layers(p, analysis, default):
                 'activation': activ,
                 'dropout': default['dropout']
                 })
+        # add hidden layers
         else:
             layers.append({
                 'type': p['model_type'],

@@ -145,15 +145,37 @@
                 <div class="row p-2">
                     <div class="col">
                         <button id="propose-btn" class="btn btn-primary ignn-btn" style="display: inline;" disabled>Propose models</button>
-                        <button id="save-proposals-btn" class="btn btn-primary ignn-btn " style="display: inline;" disabled>Save proposals</button>
+                        <button id="save-proposal-btn" class="btn btn-primary ignn-btn " style="display: inline;" disabled>Save proposal</button>
                         <button id="build-btn" class="btn btn-primary ignn-btn " style="display: inline;" disabled>Build model</button>
                     </div>
                 </div>
                 <!--PROPOSALS SETTINGS-->
                 <div class="row" id="stage-2">
                     <div class="col">
-                        <div class="bubble p-3 m-2" id="proposals-settings">
-                            <p>What are your preferences?</p>
+                        <div class="bubble p-3 m-2" id="model-preferences">
+                            <!--GNN SETTINGS-->
+                                <p>Specify the number of input and output features of the GNN</p>
+                                <!--FEATURES-->
+                                    <label for="split-size" >Input features:
+                                        <input type="number" class="form-control" style="width:25%; display:inline;" id="input-features">
+                                    </label>
+                                    <label for="num-splits" >Output features:
+                                        <input type="number" class="form-control" style="width:25%; display:inline;" id="output-features">
+                                    </label>
+                                <!--TASK-->
+                                <p class="pt-3">Specify the prediction task</p>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label" for="radio1">
+                                        <input type="radio" class="form-check-input" id="radio1" name="taskradio" value="node_classification" checked>Node classification
+                                    </label>
+                                </div>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label" for="radio2">
+                                        <input type="radio" class="form-check-input" id="radio2" name="taskradio" value="graph_classification" disabled>Graph classification
+                                    </label>
+                                </div>
+                            <!--PREFERENCES-->
+                            <p class="pt-3">What are your preferences?</p>
                             <div class="form-check-inline" >
                                 <label class="form-check-label" for="check1">
                                   <input type="checkbox" class="form-check-input" id="check1" name="memory" value="memory">Memory efficiency
@@ -166,7 +188,7 @@
                             </div>        
                             <div class="form-check-inline" >
                                 <label class="form-check-label" for="check3">
-                                    <input type="checkbox" class="form-check-input" id="check3" name="precision" value="precision">Precision
+                                    <input type="checkbox" class="form-check-input" id="check3" name="accuracy" value="accuracy">Accuracy
                                 </label>
                             </div>
                         </div>
@@ -174,7 +196,7 @@
                 </div>
                 <div class="row" id="stage-">
                     <div class="col">
-                        <div class="bubble p-3 m-2 table-scroll" id="proposals">
+                        <div class="bubble p-3 m-2 table-scroll" id="proposal-table">
                             <table style="width:100%">
                                 <thead>
                                     <tr>

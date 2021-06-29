@@ -1,3 +1,4 @@
+from ignnspector.model.proposers import custom_studies
 import eel
 import os, random
 from pathlib import Path
@@ -11,6 +12,7 @@ from ignnspector.analysis import analyse
 
 #app settings needed during the execution of the app
 app = {}
+
 
 @eel.expose
 def request_paths(name):
@@ -41,6 +43,7 @@ def request_paths(name):
 
     app['explorer_path'] = path
     
+
 @eel.expose
 def request_saved_reports():
     saved_reports = per.get_saved_reports()
@@ -56,12 +59,14 @@ def request_saved_reports():
 
     eel.set_saved_reports(content)
 
+
 @eel.expose
 def analyse_graph(name, is_saved, analysis):
     if is_saved:
         saved_reports = per.get_saved_reports()
         report = next((x for x in saved_reports if x['name'] == name), None)
-        G = Graph().report = report
+        G = Graph()
+        G.report = report
         # enter STAGE 2 (show analysis results)
         eel.set_stage(2)
     else:
@@ -88,7 +93,7 @@ def analyse_graph(name, is_saved, analysis):
                                 num_splits=analysis['num_splits'])
             # enter STAGE 2 (show analysis results)
             eel.set_stage(2)
-
+            eel.enable_button('#save-analysis-btn', True)
 
     app['graph'] = G
     content = ''
@@ -103,12 +108,50 @@ def analyse_graph(name, is_saved, analysis):
             content += '</tr>'
     eel.set_graph_report(content)
 
+
+@eel.expose
+def save_analysis():
+    per.save_analysis(app)
+
+@eel.expose
+def propose_models(proposal_settings):
+    input_features = proposal_settings['input']
+    output_features = proposal_settings['output']
+    task = proposal_settings['task']
+    preferences = proposal_settings['preferences']
+
+    analysis_report = app['graph'].report
+
+    analysis_report['in_features'] = int(input_features)
+    analysis_report['out_features'] = int(output_features)
+    analysis_report['task'] = task
+    for preference in preferences:
+        analysis_report[preference] = 'high'
+    
+    proposals = custom_studies(analysis_report)
+    app['proposals'] = proposals
+
+    content = ''
+    for proposal, i in zip(proposals, range(len(proposals))):
+        content += f'<tr value="{str(i)}">'
+        content += '<td>' + proposal['model_type'] + '</td>'
+        content += '<td>' + str(len(proposal['layers'])) + '</td>'
+        content += '</tr>'
+    eel.set_proposal_table(content)
+
+@eel.expose
+def save_proposal(index):
+    proposal = app['proposals'][index]
+    per.save_proposal(proposal)
+
 def close_callback(route, websockets):
     if not websockets:
         print('Bye!')
         exit()
 
+
 eel.init('presentation')
+
 
 eel.start('index.html', mode='chrome', 
                         host='localhost', 

@@ -45,3 +45,4 @@ in_features:  16
 out_features: 4
 task: node_classification
 time_efficiency: low
+name: 'SiteCeer'

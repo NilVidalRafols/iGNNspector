@@ -28,3 +28,20 @@ def get_saved_reports():
                 report = yaml.full_load(f)
             reports.append(report)
     return reports
+
+def save_analysis(app):
+    graph = app['graph']
+    name = app['file_path'].name
+    graph.report['name'] = name
+
+    stick = '\\' if sys.platform == 'win32' else '/'
+    dir = p.Path('persistence'+stick+'reports')
+    with open(dir.absolute+stick+name, 'w') as f:
+        yaml.dump(graph.report, f)
+
+def save_proposal(proposal):
+    name = proposal['model_name']
+    stick = '\\' if sys.platform == 'win32' else '/'
+    dir = p.Path('persistence'+stick+'proposals')
+    with open(dir.absolute+stick+name, 'w') as f:
+        yaml.dump(proposal, f)

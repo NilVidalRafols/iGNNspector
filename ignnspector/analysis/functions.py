@@ -1,3 +1,4 @@
+import sys
 import networkx as nx
 import torch_geometric as pyg
 from ignnspector import Graph
@@ -61,7 +62,14 @@ nx_functions = [
     # Parameters: graph, attribute name
     nx.attribute_assortativity_coefficient
 ]
-pyg_functions = [
-    # Parameters: edge_index, y
-    pyg.utils.homophily_ratio
-]
+
+if sys.platform == 'win32':
+    pyg_functions = [
+        # Parameters: edge_index, y
+        pyg.utils.homophily
+    ]
+else:
+    pyg_functions = [
+        # Parameters: edge_index, y
+        pyg.utils.homophily_ratio
+    ]

@@ -2,7 +2,7 @@ from ignnspector.model.proposers import custom_studies
 import eel
 import os, random
 from pathlib import Path
-from datetime import datetime
+import time
 
 from torch.functional import split
 
@@ -106,6 +106,7 @@ def analyse_graph(name, is_saved, analysis):
             else:
                 content += '<td>' + str(v) + '</td>'
             content += '</tr>'
+
     eel.set_graph_report(content)
 
 
@@ -153,7 +154,7 @@ def close_callback(route, websockets):
 eel.init('presentation')
 
 
-eel.start('index.html', mode='chrome', 
+eel.start('index.html', mode='edge', 
                         host='localhost', 
                         port=27000, 
                         block=True, 

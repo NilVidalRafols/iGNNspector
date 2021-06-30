@@ -34,7 +34,7 @@ var stages = [
     // STAGE 2: show results of the analysis and give the user the possibility 
     // to download results
     function () {
-        if (!is_saved)
+        if (!graph.is_saved)
             enable_button('#save-analysis-btn', true);
         $('#stage-0').slideUp('slow');
         $('#stage-1').slideUp('slow');
@@ -151,10 +151,10 @@ function set_graph(name, is_saved) {
     $('#selected-graph').text(name);
     $('#analyse-btn').prop('disabled', false);
 }
+
 eel.expose(set_graph_report)
 function set_graph_report(content) {
     $('#report-explorer table tbody').html(content);
-
 }
 
 eel.expose(set_saved_reports)
@@ -172,7 +172,7 @@ function set_proposal_table(content) {
     $('#proposal-table table tbody').html(content);
     $('#proposal-table table tbody tr').each(function () {
         $(this).click(function () {
-            eel.set_proposal($(this).attr('value'));
+            set_proposal($(this).attr('value'));
         });
     });
 
@@ -180,6 +180,8 @@ function set_proposal_table(content) {
 
 function set_proposal(index) {
     proposal['index'] = index;
+    enable_button('#save-proposal-btn', proposal.index != '');
+    enable_button('#build-btn', proposal.index != '');
 }
 
 function enable_proposal_button() {
@@ -208,4 +210,7 @@ function set_stage(index) {
     stages[index]();
     message('');
     enable_proposal_button();
+    enable_button('#save-analysis-btn', index == 2);
+    enable_button('#save-proposal-btn', proposal.index != '');
+    enable_button('#build-btn', proposal.index != '');
 }

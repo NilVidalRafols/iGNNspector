@@ -1,0 +1,43 @@
+attribute_assortativity_coefficient:
+  time: 0.005240201950073242
+  value: 0.771085422300209
+average_clustering:
+  time: 0.023128986358642578
+  value: 0.24067329850193728
+average_shortest_path_length:
+  time: 4.294389724731445
+  value: 6.310998681298742
+density:
+  time: 0.00045228004455566406
+  value: 0.0014399999126942077
+diameter:
+  time: 4.262997150421143
+  value: 19.0
+edge_connectivity:
+  time: 4.021445035934448
+  value: 1.0
+edge_cut:
+  time: 0.0041391849517822266
+  value: 0.0
+false_avg_degree:
+  time: 0.0005905628204345703
+  value: 3.8980797636632203
+homophily_ratio:
+  time: 0.0002999305725097656
+  value: 0.8099658961727927
+node_connectivity:
+  time: 21.182522773742676
+  value: 1.0
+num_edges: 10556
+num_nodes: 2708
+num_splits: 1
+radius:
+  time: 4.264030694961548
+  value: 10.0
+real_avg_degree:
+  time: 0.0006613731384277344
+  value: 3.8980797636632203
+split_num_edges:
+- 10556
+split_size: 2708
+total_time: 38.059897899627686

@@ -1,53 +1,55 @@
-time_efficiency:
-    '== high': &high
-        homophily:
-            'all':
-                -   model_type: GCN
-                    num_layers: 3
-                -   model_type: GAT
-                    num_layers: 3
-        modularity:
-            '< 0.5':
-                -   model_type: GAT
-                    num_layers: 3
-            '>= 0.5':
-                -   model_type: CE-GCN
-                    num_layers: 3
+# time_efficiency:
+#     '== high': &high
+#         homophily:
+#             'all':
+#                 -   model_type: GCN
+#                     num_layers: 3
+#                 -   model_type: GAT
+#                     num_layers: 3
+#         modularity:
+#             '< 0.5':
+#                 -   model_type: GCN
+#                     num_layers: 3
+#                 -   model_type: GAT
+#                     num_layers: 3
+#             '>= 0.5':
+#                 -   model_type: CE-GCN
+#                     num_layers: 3
 
-    '== medium': *high
+#     '== medium': *high
 
-    '== low':
-        homophily:
-            '< 0.6':
-                -   model_type: GCN
-                    num_layers: 3
-                -   model_type: GIN
-                    num_layers: 3
+#     '== low':
+homophily:
+    '> 0.6':
+        -   model_type: GCN
+            num_layers: 3
+        -   model_type: GIN
+            num_layers: 3
 
-            '>= 0.6':
-                -   model_type: Geom-GCN
-                    num_layers: 5
-                -   model_type: GCN2
-                    num_layers: 16
-                -   model_type: H2GCN
-                    num_layers: 16
-        task:
-            '== node_classification':
-                -   model_type: GAT
-                    num_layers: 3
-                -   model_type: GCN2
-                    num_layers: 16
-                -   model_type: H2GCN
-                    num_layers: 16
-            '== graph_classification':
-                -   model_type: GAT
-                    num_layers: 3
-                -   model_type: GCN
-                    num_layers: 2
-            '== node_prediction':
-                -   model_type: Geom-GCN
-                    num_layers: 5
-                -   model_type: GCN2
-                    num_layers: 16
-                -   model_type: H2GCN
-                    num_layers: 16
+    '<= 0.6':
+        -   model_type: Geom-GCN
+            num_layers: 5
+        -   model_type: GCN2
+            num_layers: 16
+        -   model_type: H2GCN
+            num_layers: 16
+task:
+    '== node_classification':
+        -   model_type: GAT
+            num_layers: 3
+        -   model_type: GCN2
+            num_layers: 16
+        -   model_type: H2GCN
+            num_layers: 16
+    '== graph_classification':
+        -   model_type: GAT
+            num_layers: 3
+        -   model_type: GCN
+            num_layers: 2
+    '== node_prediction':
+        -   model_type: Geom-GCN
+            num_layers: 5
+        -   model_type: GCN2
+            num_layers: 16
+        -   model_type: H2GCN
+            num_layers: 16

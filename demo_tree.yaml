@@ -1,0 +1,16 @@
+homophily_ratio:
+    '> 0.6':
+        -   model_type: GCN
+            num_layers: 3
+        -   model_type: GAT
+            num_layers: 3
+        -   model_type: GIN
+            num_layers: 3
+
+    '<= 0.6':
+        -   model_type: Geom-GCN
+            num_layers: 5
+        -   model_type: GCN2
+            num_layers: 16
+        -   model_type: H2GCN
+            num_layers: 16

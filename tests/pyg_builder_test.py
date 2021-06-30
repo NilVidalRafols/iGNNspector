@@ -19,7 +19,7 @@ def get_analysis_report(name):
     return analysis_report
 
 def get_proposals(analysis_report):
-    proposals = custom_studies(analysis_report, [('model_type', 10)])
+    proposals = custom_studies(analysis_report)
     return proposals
 
 def train(data, model, optimizer, criterion):

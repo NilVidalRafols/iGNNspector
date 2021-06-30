@@ -1,0 +1,18 @@
+layers:
+- activation: relu
+  dropout: 0.5
+  in_features: 1433
+  out_features: 293
+  type: GIN
+- activation: relu
+  dropout: 0.5
+  in_features: 293
+  out_features: 293
+  type: GIN
+- activation: log_softmax
+  dropout: 0.5
+  in_features: 293
+  out_features: 7
+  type: MLP
+model_name: iGNNspector_GIN
+model_type: GIN
